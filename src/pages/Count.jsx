@@ -14,6 +14,8 @@ export default function Count() {
 
   const [message, setMessage] = useState("");
   const [recentCounts, setRecentCounts] = useState([]); // 👈 last 5 (full info)
+  const [partSuggestions, setPartSuggestions] = useState([]);
+
   const tagInputRef = useRef(null);
 
   useEffect(() => {
@@ -67,6 +69,20 @@ export default function Count() {
     }
   };
 
+  const searchPartNo = async (value) => {
+    if (!value) {
+      setPartSuggestions([]);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${API}/upload/parts/search?q=${value}`);
+      setPartSuggestions(res.data);
+    } catch {
+      setPartSuggestions([]);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -91,15 +107,36 @@ export default function Count() {
         </div>
 
         {/* Part No */}
-        <div className="space-y-1">
+        <div className="space-y-1 relative">
           <label className="text-xs font-medium text-gray-400">Part No</label>
           <input
             className="w-full border px-2 py-1 rounded text-center"
             placeholder="TG949046-4100"
             value={form.partNo}
-            onChange={(e) => setForm({ ...form, partNo: e.target.value })}
+            onChange={(e) => {
+              setForm({ ...form, partNo: e.target.value });
+              searchPartNo(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
           />
+
+          {/* Suggestions */}
+          {partSuggestions.length > 0 && (
+            <div className="absolute z-10 w-full bg-white border rounded shadow text-sm">
+              {partSuggestions.map((p, i) => (
+                <div
+                  key={i}
+                  className="px-2 py-1 hover:bg-blue-50 cursor-pointer"
+                  onClick={() => {
+                    setForm({ ...form, partNo: p });
+                    setPartSuggestions([]);
+                  }}
+                >
+                  {p}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Actual Qty */}

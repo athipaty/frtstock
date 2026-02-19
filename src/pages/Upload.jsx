@@ -1,8 +1,134 @@
+// pages/Upload.jsx
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const API = "https://center-kitchen-backend.onrender.com";
+
 export default function Upload() {
+  const [systemFile, setSystemFile] = useState(null);
+  const [tagFile, setTagFile] = useState(null);
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState(null);
+
+  const loadStatus = async () => {
+    try {
+      const res = await axios.get(`${API}/upload/status`);
+      setStatus(res.data);
+    } catch {
+      setStatus(null);
+    }
+  };
+
+  useEffect(() => {
+    loadStatus();
+  }, []);
+
+  const uploadFile = async (file, endpoint) => {
+    if (!file) {
+      setMessage("Please select a file first");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      await axios.post(`${API}${endpoint}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setMessage("Upload successful");
+      loadStatus(); // 👈 refresh status after upload
+    } catch (err) {
+      setMessage(err.response?.data?.error || "Upload failed");
+    }
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Upload Master Data</h1>
-      <p>Upload system stock & tag list</p>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow p-4 space-y-4">
+        <h1 className="text-xl font-bold text-center">Upload Master Data</h1>
+
+        {/* STATUS */}
+        {status && (
+          <div className="text-sm space-y-1">
+            <div>
+              System Stock:{" "}
+              {status.systemStock.uploaded ? (
+                <span className="text-blue-700">
+                  Uploaded ({status.systemStock.count})
+                </span>
+              ) : (
+                <span className="text-red-600">Not uploaded</span>
+              )}
+            </div>
+            <div>
+              Tag List:{" "}
+              {status.tagList.uploaded ? (
+                <span className="text-blue-700">
+                  Uploaded ({status.tagList.count})
+                </span>
+              ) : (
+                <span className="text-red-600">Not uploaded</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        <hr />
+
+        {/* System Stock Upload */}
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-gray-500">
+            System Stock (Excel)
+          </label>
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={(e) => setSystemFile(e.target.files[0])}
+            className="w-full text-sm"
+          />
+          <button
+            onClick={() => uploadFile(systemFile, "/upload/system-stock")}
+            className="w-full bg-blue-600 text-white py-2 rounded text-sm"
+          >
+            Upload System Stock
+          </button>
+        </div>
+
+        <hr />
+
+        {/* Tag List Upload */}
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-gray-500">
+            Tag List (Excel)
+          </label>
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={(e) => setTagFile(e.target.files[0])}
+            className="w-full text-sm"
+          />
+          <button
+            onClick={() => uploadFile(tagFile, "/upload/tags")}
+            className="w-full bg-green-600 text-white py-2 rounded text-sm"
+          >
+            Upload Tag List
+          </button>
+        </div>
+
+        {message && (
+          <div
+            className={`text-center text-sm p-2 rounded ${
+              message === "Upload successful"
+                ? "text-blue-700 bg-blue-50"
+                : "text-red-700 bg-red-50"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
