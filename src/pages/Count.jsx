@@ -45,15 +45,15 @@ export default function Count() {
             qty: form.actualQty,
           },
           ...prev,
-        ].slice(0, 5)
+        ].slice(0, 5),
       );
 
       // Reset per-tag fields
       setForm({
         tagNo: "",
-        partNo: form.partNo,
+        partNo: "",
         actualQty: "",
-        location: form.location,
+        location: "",
       });
 
       setTimeout(() => {
@@ -75,9 +75,8 @@ export default function Count() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-3">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow p-3">
-
         {/* Tag No */}
         <div className="space-y-1">
           <label className="text-xs font-medium text-gray-400">Tag No</label>
@@ -132,13 +131,21 @@ export default function Count() {
 
         <button
           onClick={submitCount}
-          className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-2"
+          className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-3"
         >
           Save
         </button>
 
         {message && (
-          <div className="text-center text-sm text-gray-700">{message}</div>
+          <div
+            className={`text-center text-sm text-gray-700 p-2 ${
+              message === "Count saved successfully"
+                ? "text-blue-700"
+                : "text-red-700"
+            }`}
+          >
+            {message}
+          </div>
         )}
 
         {/* 👇 Last 5 counts (2-line format) */}
@@ -149,10 +156,7 @@ export default function Count() {
             </div>
 
             {recentCounts.map((c, i) => (
-              <div
-                key={i}
-                className="p-2 border rounded bg-gray-50 text-sm"
-              >
+              <div key={i} className="p-2 border rounded bg-gray-50 text-sm">
                 <div className="flex justify-between font-medium">
                   <span>{c.tagNo}</span>
                   <span>{c.location}</span>
