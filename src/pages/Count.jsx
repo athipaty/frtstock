@@ -189,7 +189,7 @@ export default function Count() {
               {locationSuggestions.map((l, i) => (
                 <div
                   key={i}
-                  className="px-2 py-1 hover:bg-blue-50 cursor-pointer"
+                  className="px-2 py-1 hover:bg-blue-50 cursor-pointer text-center"
                   onClick={() => {
                     setForm({ ...form, location: l });
                     setLocationSuggestions([]);
