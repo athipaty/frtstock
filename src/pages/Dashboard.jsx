@@ -1,145 +1,127 @@
 // pages/Dashboard.jsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const API = "https://center-kitchen-backend.onrender.com";
 
+/* ---------- UI HELPERS (no logic change) ---------- */
+const formatNumber = (n) =>
+  new Intl.NumberFormat("en-US").format(n);
+
 export default function Dashboard() {
-  const [uploadStatus, setUploadStatus] = useState(null);
-  const [countStatus, setCountStatus] = useState(null);
-  const navigate = useNavigate();
+  const [dashboard, setDashboard] = useState(null);
 
   useEffect(() => {
-    loadStatus();
+    loadData();
   }, []);
 
-  const loadStatus = async () => {
+  const loadData = async () => {
     try {
-      const [uploadRes, countRes] = await Promise.all([
-        axios.get(`${API}/upload/status`),
-        axios.get(`${API}/count/status`),
-      ]);
-
-      setUploadStatus(uploadRes.data);
-      setCountStatus(countRes.data);
-    } catch {
-      // silently fail for now
+      const dashboardRes = await axios.get(
+        `${API}/count/dashboard-status`
+      );
+      setDashboard(dashboardRes.data);
+    } catch (err) {
+      console.error("Dashboard load failed", err);
     }
   };
 
-  const readyToCount =
-    uploadStatus?.systemStock.uploaded &&
-    uploadStatus?.locationList.uploaded;
+  const percent = (actual, total) =>
+    total ? Math.round((actual / total) * 100) : 0;
+
+  /* ---------- Circle UI (presentation only) ---------- */
+  const CircleProgress = ({ label, actual, system, color }) => {
+    const pct = percent(actual, system);
+    const r = 28;
+    const c = 2 * Math.PI * r;
+
+    return (
+      <div className="flex items-center gap-4">
+        {/* Circle */}
+        <div className="relative w-16 h-16 shrink-0">
+          <svg className="w-full h-full -rotate-90">
+            {/* Background */}
+            <circle
+              cx="32"
+              cy="32"
+              r={r}
+              stroke="#e5e7eb"
+              strokeWidth="6"
+              fill="none"
+            />
+            {/* Progress */}
+            <circle
+              cx="32"
+              cy="32"
+              r={r}
+              stroke={color}
+              strokeWidth="6"
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray={c}
+              strokeDashoffset={(1 - pct / 100) * c}
+              className="transition-all duration-700 ease-out"
+            />
+          </svg>
+
+          {/* Percentage */}
+          <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-800">
+            {pct}%
+          </div>
+        </div>
+
+        {/* Text */}
+        <div className="flex-1">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">{label}</span>
+            <span className="font-medium text-gray-800">
+              {formatNumber(actual)} / {formatNumber(system)}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
-      <div className="max-w-md mx-auto space-y-4">
-
-        {/* Title */}
-        <h1 className="text-xl font-bold">Dashboard</h1>
-
-        {/* Upload Status */}
-        {uploadStatus && (
-          <div className="bg-white rounded shadow p-3 space-y-1 text-sm">
-            <div className="font-semibold text-gray-600">Upload Status</div>
-
-            <div>
-              System Stock:{" "}
-              {uploadStatus.systemStock.uploaded ? (
-                <span className="text-blue-700">
-                  Uploaded ({uploadStatus.systemStock.count})
-                </span>
-              ) : (
-                <span className="text-red-600">Not uploaded</span>
-              )}
-            </div>
-
-            <div>
-              Tag List:{" "}
-              {uploadStatus.tagList.uploaded ? (
-                <span className="text-blue-700">
-                  Uploaded ({uploadStatus.tagList.count})
-                </span>
-              ) : (
-                <span className="text-red-600">Not uploaded</span>
-              )}
-            </div>
-
-            <div>
-              Location List:{" "}
-              {uploadStatus.locationList.uploaded ? (
-                <span className="text-blue-700">
-                  Uploaded ({uploadStatus.locationList.count})
-                </span>
-              ) : (
-                <span className="text-red-600">Not uploaded</span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Counting Progress */}
-        {countStatus && (
-          <div className="bg-white rounded shadow p-3 text-sm space-y-1">
-            <div className="font-semibold text-gray-600">
-              Counting Progress
-            </div>
-
-            <div>
-              {countStatus.counted} / {countStatus.total} tags counted
-            </div>
-
-            <div className="w-full bg-gray-200 rounded h-2">
-              <div
-                className="bg-blue-600 h-2 rounded"
-                style={{
-                  width: `${
-                    countStatus.total
-                      ? Math.round(
-                          (countStatus.counted / countStatus.total) * 100
-                        )
-                      : 0
-                  }%`,
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        <div className="bg-white rounded shadow p-3 space-y-2">
-          <div className="font-semibold text-gray-600 text-sm">
-            Quick Actions
+      {dashboard && (
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-5">
+          {/* Header */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-800">
+              Inventory Progress
+            </h2>
+            <p className="text-xs text-gray-500">
+              Actual count vs system record
+            </p>
           </div>
 
-          <button
-            onClick={() => navigate("/upload")}
-            className="w-full border py-2 rounded text-sm"
-          >
-            Go to Upload
-          </button>
+          {/* Quantity */}
+          <CircleProgress
+            label="Quantity"
+            actual={dashboard.qty.actual}
+            system={dashboard.qty.system}
+            color="#2563eb" // blue
+          />
 
-          <button
-            onClick={() => navigate("/count")}
-            disabled={!readyToCount}
-            className={`w-full py-2 rounded text-sm ${
-              readyToCount
-                ? "bg-blue-600 text-white"
-                : "bg-gray-300 text-gray-500"
-            }`}
-          >
-            Start Counting
-          </button>
+          {/* Part No */}
+          <CircleProgress
+            label="Part No"
+            actual={dashboard.partNo.actual}
+            system={dashboard.partNo.system}
+            color="#16a34a" // green
+          />
 
-          <button
-            onClick={() => navigate("/variance")}
-            className="w-full border py-2 rounded text-sm"
-          >
-            View Result
-          </button>
+          {/* Location */}
+          <CircleProgress
+            label="Location"
+            actual={dashboard.location.actual}
+            system={dashboard.location.system}
+            color="#7c3aed" // purple
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 }
