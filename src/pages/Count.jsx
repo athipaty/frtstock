@@ -19,10 +19,6 @@ export default function Count() {
 
   const tagInputRef = useRef(null);
 
-  useEffect(() => {
-    tagInputRef.current?.focus();
-  }, []);
-
   const submitCount = async () => {
     if (!form.tagNo || !form.partNo || !form.actualQty || !form.location) {
       return setMessage("Please fill all fields");
@@ -59,14 +55,8 @@ export default function Count() {
         location: "",
       });
 
-      setTimeout(() => {
-        tagInputRef.current?.focus();
-      }, 0);
     } catch (err) {
       setMessage(err.response?.data?.error || "Failed to save count");
-      setTimeout(() => {
-        tagInputRef.current?.focus();
-      }, 0);
     }
   };
 
