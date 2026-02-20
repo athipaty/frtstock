@@ -97,7 +97,7 @@ export default function Count() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-3">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow p-3">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6">
         {/* Tag No */}
         <div className="space-y-1">
           <label className="text-xs font-medium text-gray-400">Tag No</label>

@@ -4,9 +4,8 @@ import axios from "axios";
 
 const API = "https://center-kitchen-backend.onrender.com";
 
-/* ---------- UI HELPERS (no logic change) ---------- */
-const formatNumber = (n) =>
-  new Intl.NumberFormat("en-US").format(n);
+/* ---------- UI helpers (display only) ---------- */
+const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -17,10 +16,8 @@ export default function Dashboard() {
 
   const loadData = async () => {
     try {
-      const dashboardRes = await axios.get(
-        `${API}/count/dashboard-status`
-      );
-      setDashboard(dashboardRes.data);
+      const res = await axios.get(`${API}/count/dashboard-status`);
+      setDashboard(res.data);
     } catch (err) {
       console.error("Dashboard load failed", err);
     }
@@ -30,29 +27,34 @@ export default function Dashboard() {
     total ? Math.round((actual / total) * 100) : 0;
 
   /* ---------- Circle UI (presentation only) ---------- */
-  const CircleProgress = ({ label, actual, system, color }) => {
+  const CircleProgress = ({
+    label,
+    actual,
+    system,
+    color,
+    size = "sm", // sm | lg
+  }) => {
     const pct = percent(actual, system);
-    const r = 28;
+    const r = size === "lg" ? 36 : 28;
+    const box = size === "lg" ? 88 : 64;
     const c = 2 * Math.PI * r;
 
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
         {/* Circle */}
-        <div className="relative w-16 h-16 shrink-0">
-          <svg className="w-full h-full -rotate-90">
-            {/* Background */}
+        <div className="relative shrink-0" style={{ width: box, height: box }}>
+          <svg width={box} height={box} className="-rotate-90">
             <circle
-              cx="32"
-              cy="32"
+              cx={box / 2}
+              cy={box / 2}
               r={r}
               stroke="#e5e7eb"
-              strokeWidth="6"
+              strokeWidth="12"
               fill="none"
             />
-            {/* Progress */}
             <circle
-              cx="32"
-              cy="32"
+              cx={box / 2}
+              cy={box / 2}
               r={r}
               stroke={color}
               strokeWidth="6"
@@ -70,13 +72,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Text */}
-        <div className="flex-1">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">{label}</span>
-            <span className="font-medium text-gray-800">
-              {formatNumber(actual)} / {formatNumber(system)}
-            </span>
+        {/* Label + Number (RIGHT side) */}
+        <div className="flex flex-col">
+          <div className="text-l text-gray-600 text-right">{label}</div>
+          <div className="text-xs font-medium text-gray-800 text-right">
+            {formatNumber(actual)} / {formatNumber(system)}
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
       {dashboard && (
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-5">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6">
           {/* Header */}
           <div>
             <h2 className="text-base font-semibold text-gray-800">
@@ -97,28 +97,31 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {/* Quantity */}
+          {/* Quantity (Hero) */}
           <CircleProgress
             label="Quantity"
             actual={dashboard.qty.actual}
             system={dashboard.qty.system}
-            color="#2563eb" // blue
-          />
+            color="#2563eb"
+            size="lg"
+            />
 
           {/* Part No */}
           <CircleProgress
             label="Part No"
             actual={dashboard.partNo.actual}
             system={dashboard.partNo.system}
-            color="#16a34a" // green
-          />
+            size="lg"
+            color="#16a34a"
+            />
 
           {/* Location */}
           <CircleProgress
             label="Location"
             actual={dashboard.location.actual}
             system={dashboard.location.system}
-            color="#7c3aed" // purple
+            size="lg"
+            color="#7c3aed"
           />
         </div>
       )}
