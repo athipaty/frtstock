@@ -9,6 +9,7 @@ export default function Upload() {
   const [tagFile, setTagFile] = useState(null);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState(null);
+  const [locationFile, setLocationFile] = useState(null);
 
   const loadStatus = async () => {
     try {
@@ -114,6 +115,27 @@ export default function Upload() {
             className="w-full bg-green-600 text-white py-2 rounded text-sm"
           >
             Upload Tag List
+          </button>
+        </div>
+
+        <hr />
+
+        {/* Location List Upload */}
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-gray-500">
+            Location List (Excel)
+          </label>
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={(e) => setLocationFile(e.target.files[0])}
+            className="w-full text-sm"
+          />
+          <button
+            onClick={() => uploadFile(locationFile, "/upload/locations")}
+            className="w-full bg-purple-600 text-white py-2 rounded text-sm"
+          >
+            Upload Location List
           </button>
         </div>
 

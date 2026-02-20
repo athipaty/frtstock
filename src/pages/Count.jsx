@@ -15,6 +15,7 @@ export default function Count() {
   const [message, setMessage] = useState("");
   const [recentCounts, setRecentCounts] = useState([]); // 👈 last 5 (full info)
   const [partSuggestions, setPartSuggestions] = useState([]);
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
 
   const tagInputRef = useRef(null);
 
@@ -66,6 +67,20 @@ export default function Count() {
       setTimeout(() => {
         tagInputRef.current?.focus();
       }, 0);
+    }
+  };
+
+  const searchLocation = async (value) => {
+    if (!value) {
+      setLocationSuggestions([]);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${API}/upload/locations/search?q=${value}`);
+      setLocationSuggestions(res.data);
+    } catch {
+      setLocationSuggestions([]);
     }
   };
 
@@ -155,15 +170,36 @@ export default function Count() {
         </div>
 
         {/* Location */}
-        <div className="space-y-1">
+        <div className="space-y-1 relative">
           <label className="text-xs font-medium text-gray-400">Location</label>
           <input
             className="w-full border px-2 py-1 rounded text-center"
             placeholder="A1-01"
             value={form.location}
-            onChange={(e) => setForm({ ...form, location: e.target.value })}
+            onChange={(e) => {
+              setForm({ ...form, location: e.target.value });
+              searchLocation(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
           />
+
+          {/* Suggestions */}
+          {locationSuggestions.length > 0 && (
+            <div className="absolute z-10 w-full bg-white border rounded shadow text-sm">
+              {locationSuggestions.map((l, i) => (
+                <div
+                  key={i}
+                  className="px-2 py-1 hover:bg-blue-50 cursor-pointer"
+                  onClick={() => {
+                    setForm({ ...form, location: l });
+                    setLocationSuggestions([]);
+                  }}
+                >
+                  {l}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <button
