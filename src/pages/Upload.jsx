@@ -63,11 +63,23 @@ export default function Upload() {
                 <span className="text-red-600">Not uploaded</span>
               )}
             </div>
+
             <div>
               Tag List:{" "}
               {status.tagList.uploaded ? (
                 <span className="text-blue-700">
                   Uploaded ({status.tagList.count})
+                </span>
+              ) : (
+                <span className="text-red-600">Not uploaded</span>
+              )}
+            </div>
+
+            <div>
+              Location List:{" "}
+              {status.locationList.uploaded ? (
+                <span className="text-blue-700">
+                  Uploaded ({status.locationList.count})
                 </span>
               ) : (
                 <span className="text-red-600">Not uploaded</span>
