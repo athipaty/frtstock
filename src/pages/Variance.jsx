@@ -28,7 +28,7 @@ export default function Variance() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-4">
 
         {/* Header */}
         <div>
@@ -42,67 +42,62 @@ export default function Variance() {
 
         {/* Loading */}
         {loading && (
-          <div className="text-sm text-gray-500 text-center py-8">
+          <div className="text-xs text-gray-500 text-center py-6">
             Loading variance data…
           </div>
         )}
 
         {/* Empty */}
         {!loading && variances.length === 0 && (
-          <div className="text-sm text-gray-500 text-center py-8">
+          <div className="text-xs text-gray-500 text-center py-6">
             No variances found.
           </div>
         )}
 
         {/* Variance List */}
         {!loading && variances.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {[...variances]
-  .sort(
-    (a, b) =>
-      Math.abs(a.actual - a.system) -
-      Math.abs(b.actual - b.system)
-  )
-  .map((v, index) => {
-              const diff = v.actual - v.system;
-              const isShort = diff < 0;
-              const isExcess = diff > 0;
+              // 🔽 MOST NEGATIVE FIRST
+              .sort(
+                (a, b) =>
+                  (a.actual - a.system) -
+                  (b.actual - b.system)
+              )
+              .map((v) => {
+                const diff = v.actual - v.system;
 
-              return (
-                <div
-                  key={v.partNo}
-                  className="border rounded-lg p-3 text-sm space-y-1"
-                >
-                  
-<div className="flex justify-between items-center text-xs">
-  {/* Part No */}
-  <span className="text-gray-700">
-    {v.partNo}
-  </span>
+                return (
+                  <div
+                    key={v.partNo}
+                    className="border rounded-md px-3 py-2"
+                  >
+                    <div className="flex justify-between items-center text-xs">
+                      {/* Part No */}
+                      <span className="text-gray-700">
+                        {v.partNo}
+                      </span>
 
-  {/* Result */}
-  <span
-    className={`font-medium ${
-      v.actual - v.system < 0
-        ? "text-red-600"
-        : v.actual - v.system > 0
-        ? "text-green-600"
-        : "text-gray-500"
-    }`}
-  >
-    {v.actual - v.system < 0 &&
-      `Short ${formatNumber(v.actual - v.system)}`}
-    {v.actual - v.system > 0 &&
-      `Excess +${formatNumber(v.actual - v.system)}`}
-    {v.actual - v.system === 0 && "Matched"}
-  </span>
-</div>
-                  
-
-                  
-                </div>
-              );
-            })}
+                      {/* Result */}
+                      <span
+                        className={`font-medium ${
+                          diff < 0
+                            ? "text-red-600"
+                            : diff > 0
+                            ? "text-green-600"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {diff < 0 &&
+                          `Short ${formatNumber(diff)}`}
+                        {diff > 0 &&
+                          `Excess +${formatNumber(diff)}`}
+                        {diff === 0 && "Matched"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         )}
 
