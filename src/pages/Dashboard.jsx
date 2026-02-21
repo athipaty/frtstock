@@ -119,7 +119,7 @@ export default function Dashboard() {
               Inventory Progress
             </h2>
             <p className="text-xs text-gray-500">
-              Actual count vs system record
+              Actual inventory status compared against system records.
             </p>
           </div>
 
