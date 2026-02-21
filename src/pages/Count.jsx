@@ -52,7 +52,7 @@ export default function Count() {
     }
 
     try {
-      const res = await axios.post(`${API}/count`, {
+      const res = await axios.post(`${API}/upload/count`, {
         tagNo: form.tagNo,
         partNo: form.partNo,
         location: form.location,
@@ -93,6 +93,9 @@ export default function Count() {
       // focus back to tag input
       tagInputRef.current?.focus();
     } catch (err) {
+      console.log("SAVE ERROR FULL:", err);
+      console.log("SAVE ERROR RESPONSE:", err.response?.data);
+      console.log("SAVE ERROR STATUS:", err.response?.status);
       setMessage(err.response?.data?.error || "Failed to save count");
     }
   };
