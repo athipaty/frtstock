@@ -99,6 +99,15 @@ export default function Count() {
     <div className="min-h-screen bg-gray-100 p-4">
               <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6
                 animate-fade-in">
+          {/* Header */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-800">
+              Input form
+            </h2>
+            <p className="text-xs text-gray-500">
+              
+            </p>
+          </div>
         {/* Tag No */}
         <div className="space-y-1">
           <label className="text-xs font-medium text-gray-400">Tag No</label>
