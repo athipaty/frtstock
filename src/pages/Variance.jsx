@@ -99,7 +99,7 @@ export default function Variance() {
 
                     {/* EXPAND PART */}
                     <div
-  className={`overflow-hidden transition-all duration-300 ease-out ${
+  className={`overflow-hidden transition-all duration-300 ease-in-out ${
     isOpen
       ? "max-h-96 opacity-100 mt-2"
       : "max-h-0 opacity-0"
@@ -131,7 +131,7 @@ export default function Variance() {
 
                         {/* LOCATION BREAKDOWN */}
                         <div
-  className={`overflow-hidden transition-all duration-300 ease-out ${
+  className={`overflow-hidden transition-all duration-300 ease-in-out ${
     isActualOpen
       ? "max-h-64 opacity-100 mt-1"
       : "max-h-0 opacity-0"
