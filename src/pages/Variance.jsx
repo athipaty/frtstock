@@ -264,7 +264,7 @@ export default function Variance() {
                                       <span>
                                         {l.boxes > 0 && (
                                           <span>
-                                            [ {l.qtyPerBox} × {l.boxes} ]
+                                            {l.qtyPerBox} × {l.boxes}
                                           </span>
                                         )}
                                         {l.openBoxQty > 0 && (
