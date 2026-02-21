@@ -18,6 +18,7 @@ export default function Count() {
   const [recentCounts, setRecentCounts] = useState([]);
   const [partSuggestions, setPartSuggestions] = useState([]);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [lastSaved, setLastSaved] = useState(null);
 
   const tagInputRef = useRef(null);
 
@@ -62,6 +63,12 @@ export default function Count() {
       });
 
       setMessage("Count saved successfully");
+      setLastSaved({
+        tagNo: form.tagNo,
+        partNo: form.partNo,
+        location: form.location,
+        totalQty,
+      });
 
       const saved = res.data?.record;
 
@@ -304,33 +311,25 @@ export default function Count() {
           </div>
         )}
 
-        {/* Last 5 counts */}
-        {recentCounts.length > 0 && (
-          <div className="pt-2 border-t space-y-2">
-            <div className="text-xs font-semibold text-gray-500">
-              Last 5 Counts
+        {lastSaved && (
+          <div className="mt-3 rounded border border-green-200 bg-green-50 p-3 text-sm">
+            <div className="flex items-center gap-2 text-green-700 font-medium">
+              ✅ Count saved successfully
             </div>
 
-            {recentCounts.map((c, i) => (
-              <div
-                key={i}
-                className="p-2 border rounded bg-gray-50 text-sm space-y-1"
-              >
-                <div className="flex justify-between font-medium">
-                  <span>{c.tagNo}</span>
-                  <span>{c.location}</span>
-                </div>
-                <div className="text-gray-700">{c.partNo}</div>
-                <div className="flex flex-wrap gap-x-3 text-xs text-gray-600">
-                  <span>qty/box: {c.qtyPerBox}</span>
-                  <span>boxes: {c.boxes}</span>
-                  <span>open: {c.openBoxQty}</span>
-                  <span className="font-semibold text-gray-800">
-                    total: {c.totalQty}
-                  </span>
-                </div>
+            <div className="mt-1 text-gray-700">
+              <div>
+                <span className="font-medium">Part:</span> {lastSaved.partNo}
               </div>
-            ))}
+              <div>
+                <span className="font-medium">Location:</span>{" "}
+                {lastSaved.location}
+              </div>
+              <div>
+                <span className="font-medium">Total Qty:</span>{" "}
+                {lastSaved.totalQty}
+              </div>
+            </div>
           </div>
         )}
       </div>
