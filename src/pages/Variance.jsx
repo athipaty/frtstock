@@ -99,10 +99,12 @@ export default function Variance() {
 
                     {/* EXPAND PART */}
                     <div
-                      className={`overflow-hidden transition-all duration-300 ${
-                        isOpen ? "max-h-96 mt-2" : "max-h-0"
-                      }`}
-                    >
+  className={`overflow-hidden transition-all duration-300 ease-out ${
+    isOpen
+      ? "max-h-96 opacity-100 mt-2"
+      : "max-h-0 opacity-0"
+  }`}
+>
                       <div className="text-xs text-gray-600 space-y-1 pl-2">
                         <div className="flex justify-between items-center">
   <span>System stock</span>
