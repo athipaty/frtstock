@@ -256,6 +256,17 @@ export default function Count() {
               className={inputCls}
               placeholder="0"
               value={form.openBoxQty}
+              onFocus={() => {
+                if (form.openBoxQty === "0") {
+                  setForm({ ...form, openBoxQty: "" });
+                }
+              }}
+              onBlur={() => {
+                // if user leaves it empty, reset to 0
+                if (form.openBoxQty === "") {
+                  setForm({ ...form, openBoxQty: "0" });
+                }
+              }}
               onChange={(e) => setForm({ ...form, openBoxQty: e.target.value })}
               onKeyDown={handleKeyDown}
             />
