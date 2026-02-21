@@ -26,7 +26,7 @@ export default function Count() {
   const boxesNum = Number(form.boxes || 0);
   const openBoxNum = Number(form.openBoxQty || 0);
 
-  const totalQty = subtotalQty + openBoxNum;
+  const totalQty = qtyPerBoxNum * boxesNum + openBoxNum;
 
   const submitCount = async () => {
     // Basic required fields
@@ -75,7 +75,6 @@ export default function Count() {
             qtyPerBox: saved?.qtyPerBox ?? qtyPerBoxNum,
             boxes: saved?.boxes ?? boxesNum,
             openBoxQty: saved?.openBoxQty ?? openBoxNum,
-            subtotalQty: saved?.subtotalQty ?? subtotalQty,
             totalQty: saved?.totalQty ?? totalQty,
           },
           ...prev,
@@ -141,49 +140,51 @@ export default function Count() {
           </p>
         </div>
 
-        {/* Tag No */}
-        <div className="space-y-1">
-          <label className={labelCls}>Tag No</label>
-          <input
-            ref={tagInputRef}
-            className={inputCls}
-            placeholder="IV25120002"
-            value={form.tagNo}
-            onChange={(e) => setForm({ ...form, tagNo: e.target.value })}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
+        <div className="flex items-center space-x-4">
+          {/* Tag No */}
+          <div className="space-y-1 flex-1">
+            <label className={labelCls}>Tag No</label>
+            <input
+              ref={tagInputRef}
+              className={inputCls}
+              placeholder="IV25120002"
+              value={form.tagNo}
+              onChange={(e) => setForm({ ...form, tagNo: e.target.value })}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
 
-        {/* Location */}
-        <div className="space-y-1 relative">
-          <label className={labelCls}>Location</label>
-          <input
-            className={inputCls}
-            placeholder="A1-01"
-            value={form.location}
-            onChange={(e) => {
-              setForm({ ...form, location: e.target.value });
-              searchLocation(e.target.value);
-            }}
-            onKeyDown={handleKeyDown}
-          />
+          {/* Location */}
+          <div className="space-y-1 relative flex-1">
+            <label className={labelCls}>Location</label>
+            <input
+              className={inputCls}
+              placeholder="A1-01"
+              value={form.location}
+              onChange={(e) => {
+                setForm({ ...form, location: e.target.value });
+                searchLocation(e.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+            />
 
-          {locationSuggestions.length > 0 && (
-            <div className="absolute z-10 w-full bg-white border rounded shadow text-sm">
-              {locationSuggestions.map((l, i) => (
-                <div
-                  key={i}
-                  className="px-2 py-1 hover:bg-blue-50 cursor-pointer text-center"
-                  onClick={() => {
-                    setForm({ ...form, location: l });
-                    setLocationSuggestions([]);
-                  }}
-                >
-                  {l}
-                </div>
-              ))}
-            </div>
-          )}
+            {locationSuggestions.length > 0 && (
+              <div className="absolute z-10 w-full bg-white border rounded shadow text-sm">
+                {locationSuggestions.map((l, i) => (
+                  <div
+                    key={i}
+                    className="px-2 py-1 hover:bg-blue-50 cursor-pointer text-center"
+                    onClick={() => {
+                      setForm({ ...form, location: l });
+                      setLocationSuggestions([]);
+                    }}
+                  >
+                    {l}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Part No */}
@@ -218,53 +219,56 @@ export default function Count() {
           )}
         </div>
 
-        {/* Qty / Box */}
-        <div className="space-y-1">
-          <label className={labelCls}>Qty / Box</label>
-          <input
-            type="number"
-            className={inputCls}
-            placeholder="300"
-            value={form.qtyPerBox}
-            onChange={(e) => setForm({ ...form, qtyPerBox: e.target.value })}
-            onKeyDown={handleKeyDown}
-          />
+        <div className="flex items-center space-x-4">
+          {/* Qty / Box */}
+          <div className="space-y-1 flex-1">
+            <label className={labelCls}>Qty / Box</label>
+            <input
+              className={inputCls}
+              placeholder="300"
+              value={form.qtyPerBox}
+              onChange={(e) => setForm({ ...form, qtyPerBox: e.target.value })}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+
+          {/* Boxes */}
+          <div className="space-y-1 flex-1">
+            <label className={labelCls}>Boxes</label>
+            <input
+              className={inputCls}
+              placeholder="2"
+              value={form.boxes}
+              onChange={(e) => setForm({ ...form, boxes: e.target.value })}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
         </div>
 
-        {/* Boxes */}
-        <div className="space-y-1">
-          <label className={labelCls}>Boxes</label>
-          <input
-            type="number"
-            className={inputCls}
-            placeholder="2"
-            value={form.boxes}
-            onChange={(e) => setForm({ ...form, boxes: e.target.value })}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
+        <div className="flex items-center space-x-4">
+          {/* Open / Remaining Box */}
+          <div className="space-y-1 flex-1">
+            <label className={labelCls}>Open / Remaining Box</label>
+            <input
+              className={inputCls}
+              placeholder="0"
+              value={form.openBoxQty}
+              onChange={(e) => setForm({ ...form, openBoxQty: e.target.value })}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
 
-        {/* Open / Remaining Box */}
-        <div className="space-y-1">
-          <label className={labelCls}>Open / Remaining Box (Loose Qty)</label>
-          <input
-            type="number"
-            className={inputCls}
-            placeholder="0"
-            value={form.openBoxQty}
-            onChange={(e) => setForm({ ...form, openBoxQty: e.target.value })}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-
-        {/* Total Qty (read-only) */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-400">Total Qty</label>
-          <input
-            className="w-full border px-2 py-1 rounded text-center bg-gray-50 font-semibold"
-            value={totalQty}
-            readOnly
-          />
+          {/* Total Qty (read-only) */}
+          <div className="space-y-1 flex-1">
+            <label className="text-xs font-medium text-gray-400">
+              Total Qty
+            </label>
+            <input
+              className="w-full border px-2 py-1 rounded text-center bg-gray-50 font-semibold"
+              value={totalQty}
+              readOnly
+            />
+          </div>
         </div>
 
         <button
