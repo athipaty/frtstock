@@ -90,9 +90,9 @@ export default function Variance() {
                         }`}
                       >
                         {diff < 0 &&
-                          `Short ${formatNumber(diff)}`}
+                          `${formatNumber(diff)}`}
                         {diff > 0 &&
-                          `Excess +${formatNumber(diff)}`}
+                          `+${formatNumber(diff)}`}
                         {diff === 0 && "Matched"}
                       </span>
                     </button>
