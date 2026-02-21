@@ -10,6 +10,8 @@ const formatNumber = (n) =>
 export default function Variance() {
   const [variances, setVariances] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openPart, setOpenPart] = useState(null);
+  const [openActual, setOpenActual] = useState(null);
 
   useEffect(() => {
     loadVariance();
@@ -47,18 +49,10 @@ export default function Variance() {
           </div>
         )}
 
-        {/* Empty */}
-        {!loading && variances.length === 0 && (
-          <div className="text-xs text-gray-500 text-center py-6">
-            No variances found.
-          </div>
-        )}
-
-        {/* Variance List */}
-        {!loading && variances.length > 0 && (
+        {/* List */}
+        {!loading && (
           <div className="space-y-2">
             {[...variances]
-              // 🔽 MOST NEGATIVE FIRST
               .sort(
                 (a, b) =>
                   (a.actual - a.system) -
@@ -66,19 +60,25 @@ export default function Variance() {
               )
               .map((v) => {
                 const diff = v.actual - v.system;
+                const isOpen = openPart === v.partNo;
+                const isActualOpen = openActual === v.partNo;
 
                 return (
                   <div
                     key={v.partNo}
                     className="border rounded-md px-3 py-2"
                   >
-                    <div className="flex justify-between items-center text-xs">
-                      {/* Part No */}
+                    {/* PART ROW */}
+                    <button
+                      onClick={() =>
+                        setOpenPart(isOpen ? null : v.partNo)
+                      }
+                      className="w-full flex justify-between items-center text-xs"
+                    >
                       <span className="text-gray-700">
                         {v.partNo}
                       </span>
 
-                      {/* Result */}
                       <span
                         className={`font-medium ${
                           diff < 0
@@ -94,13 +94,77 @@ export default function Variance() {
                           `Excess +${formatNumber(diff)}`}
                         {diff === 0 && "Matched"}
                       </span>
+                    </button>
+
+                    {/* EXPAND PART */}
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${
+                        isOpen ? "max-h-96 mt-2" : "max-h-0"
+                      }`}
+                    >
+                      <div className="text-xs text-gray-600 space-y-1 pl-2">
+                        <div>
+                          System stock:{" "}
+                          <span className="font-medium">
+                            {formatNumber(v.system)}
+                          </span>
+                        </div>
+
+                        {/* ACTUAL TOGGLE */}
+                        <button
+                          onClick={() =>
+                            setOpenActual(
+                              isActualOpen ? null : v.partNo
+                            )
+                          }
+                          className="flex justify-between w-full text-left"
+                        >
+                          <span>
+                            Actual stock:{" "}
+                            <span className="font-medium">
+                              {formatNumber(v.actual)}
+                            </span>
+                          </span>
+                          <span className="text-gray-400">
+                            {isActualOpen ? "−" : "+"}
+                          </span>
+                        </button>
+
+                        {/* LOCATION BREAKDOWN */}
+                        <div
+                          className={`overflow-hidden transition-all duration-300 ${
+                            isActualOpen
+                              ? "max-h-64 mt-1"
+                              : "max-h-0"
+                          }`}
+                        >
+                          <div className="pl-3 space-y-1">
+                            {v.locations?.map((l, i) => (
+                              <div
+                                key={i}
+                                className="flex justify-between text-xs text-gray-500"
+                              >
+                                <span>{l.location}</span>
+                                <span>
+                                  {formatNumber(l.qty)}
+                                </span>
+                              </div>
+                            ))}
+
+                            {!v.locations && (
+                              <div className="text-gray-400">
+                                No location data
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
               })}
           </div>
         )}
-
       </div>
     </div>
   );
