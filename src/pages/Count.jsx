@@ -102,10 +102,10 @@ export default function Count() {
           {/* Header */}
           <div>
             <h2 className="text-base font-semibold text-gray-800">
-              Input form
+              Inventory Count
             </h2>
             <p className="text-xs text-gray-500">
-              
+              Enter actual inventory counts to validate and reconcile system data.
             </p>
           </div>
         {/* Tag No */}
