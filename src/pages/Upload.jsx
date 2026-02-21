@@ -49,7 +49,15 @@ export default function Upload() {
     <div className="min-h-screen bg-gray-100 p-4">
               <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6
                 animate-fade-in">
-        <h1 className="text-xl font-bold text-center">Upload Master Data</h1>
+                  {/* Header */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-800">
+              Upload master data
+            </h2>
+            <p className="text-xs text-gray-500">
+              
+            </p>
+          </div>
 
         {/* STATUS */}
         {status && (
