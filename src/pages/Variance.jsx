@@ -124,9 +124,6 @@ export default function Variance() {
     <span className="font-medium">
       {formatNumber(v.actual)}
     </span>
-    <span className="text-gray-400">
-      {isActualOpen ? "−" : "+"}
-    </span>
   </div>
 </button>
 
