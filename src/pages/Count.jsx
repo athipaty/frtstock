@@ -11,7 +11,7 @@ export default function Count() {
     location: "",
     qtyPerBox: "",
     boxes: "",
-    openBoxQty: "",
+    openBoxQty: "0", // ✅ default
   });
 
   const [message, setMessage] = useState("");
@@ -26,7 +26,6 @@ export default function Count() {
   const boxesNum = Number(form.boxes || 0);
   const openBoxNum = Number(form.openBoxQty || 0);
 
-  const subtotalQty = qtyPerBoxNum * boxesNum;
   const totalQty = subtotalQty + openBoxNum;
 
   const submitCount = async () => {
@@ -59,10 +58,7 @@ export default function Count() {
         location: form.location,
         qtyPerBox: qtyPerBoxNum,
         boxes: boxesNum,
-        openBoxQty: openBoxNum,
-        // optional: you can also send these, but backend can compute:
-        // subtotalQty,
-        // totalQty,
+        openBoxQty: form.openBoxQty === "" ? 0 : openBoxNum, // ✅
       });
 
       setMessage("Count saved successfully");
@@ -83,7 +79,7 @@ export default function Count() {
             totalQty: saved?.totalQty ?? totalQty,
           },
           ...prev,
-        ].slice(0, 5)
+        ].slice(0, 5),
       );
 
       setForm({
@@ -92,7 +88,7 @@ export default function Count() {
         location: "",
         qtyPerBox: "",
         boxes: "",
-        openBoxQty: "",
+        openBoxQty: "0", // ✅ keep default
       });
 
       // focus back to tag input
@@ -137,7 +133,9 @@ export default function Count() {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
         {/* Header */}
         <div>
-          <h2 className="text-base font-semibold text-gray-800">Inventory Count</h2>
+          <h2 className="text-base font-semibold text-gray-800">
+            Inventory Count
+          </h2>
           <p className="text-xs text-gray-500">
             Enter counts by box to validate and reconcile system data.
           </p>
@@ -246,12 +244,6 @@ export default function Count() {
           />
         </div>
 
-        {/* Subtotal Qty (read-only) */}
-        <div className="space-y-1">
-          <label className={labelCls}>Subtotal Qty (Qty/Box × Boxes)</label>
-          <input className={`${inputCls} bg-gray-50`} value={subtotalQty} readOnly />
-        </div>
-
         {/* Open / Remaining Box */}
         <div className="space-y-1">
           <label className={labelCls}>Open / Remaining Box (Loose Qty)</label>
@@ -267,8 +259,12 @@ export default function Count() {
 
         {/* Total Qty (read-only) */}
         <div className="space-y-1">
-          <label className={labelCls}>Total Qty</label>
-          <input className={`${inputCls} bg-gray-50 font-semibold`} value={totalQty} readOnly />
+          <label className="text-xs font-medium text-gray-400">Total Qty</label>
+          <input
+            className="w-full border px-2 py-1 rounded text-center bg-gray-50 font-semibold"
+            value={totalQty}
+            readOnly
+          />
         </div>
 
         <button
@@ -281,7 +277,9 @@ export default function Count() {
         {message && (
           <div
             className={`text-center text-sm p-2 ${
-              message === "Count saved successfully" ? "text-blue-700" : "text-red-700"
+              message === "Count saved successfully"
+                ? "text-blue-700"
+                : "text-red-700"
             }`}
           >
             {message}
@@ -291,10 +289,15 @@ export default function Count() {
         {/* Last 5 counts */}
         {recentCounts.length > 0 && (
           <div className="pt-2 border-t space-y-2">
-            <div className="text-xs font-semibold text-gray-500">Last 5 Counts</div>
+            <div className="text-xs font-semibold text-gray-500">
+              Last 5 Counts
+            </div>
 
             {recentCounts.map((c, i) => (
-              <div key={i} className="p-2 border rounded bg-gray-50 text-sm space-y-1">
+              <div
+                key={i}
+                className="p-2 border rounded bg-gray-50 text-sm space-y-1"
+              >
                 <div className="flex justify-between font-medium">
                   <span>{c.tagNo}</span>
                   <span>{c.location}</span>
@@ -304,7 +307,9 @@ export default function Count() {
                   <span>qty/box: {c.qtyPerBox}</span>
                   <span>boxes: {c.boxes}</span>
                   <span>open: {c.openBoxQty}</span>
-                  <span className="font-semibold text-gray-800">total: {c.totalQty}</span>
+                  <span className="font-semibold text-gray-800">
+                    total: {c.totalQty}
+                  </span>
                 </div>
               </div>
             ))}
