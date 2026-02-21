@@ -104,12 +104,12 @@ export default function Variance() {
                       }`}
                     >
                       <div className="text-xs text-gray-600 space-y-1 pl-2">
-                        <div>
-                          System stock:{" "}
-                          <span className="font-medium">
-                            {formatNumber(v.system)}
-                          </span>
-                        </div>
+                        <div className="flex justify-between items-center">
+  <span>System stock</span>
+  <span className="font-medium">
+    {formatNumber(v.system)}
+  </span>
+</div>
 
                         {/* ACTUAL TOGGLE */}
                         <button
