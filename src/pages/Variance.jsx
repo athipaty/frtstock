@@ -114,20 +114,24 @@ export default function Variance() {
 </div>
 
                         {/* ACTUAL TOGGLE */}
-                        <button
-  onClick={() =>
-    setOpenActual(isActualOpen ? null : v.partNo)
-  }
-  className="flex justify-between items-center w-full"
->
-  <span>Actual stock</span>
-
-  <div className="flex items-center gap-2">
-    <span className="font-medium">
-      {formatNumber(v.actual)}
-    </span>
-  </div>
-</button>
+                        {v.locations?.length > 0 && (
+  <button
+    onClick={() =>
+      setOpenActual(isActualOpen ? null : v.partNo)
+    }
+    className="flex justify-between items-center w-full"
+  >
+    <span>Actual stock</span>
+    <div className="flex items-center gap-2">
+      <span className="font-medium">
+        {formatNumber(v.actual)}
+      </span>
+      <span className="text-gray-400">
+        {isActualOpen ? "−" : "+"}
+      </span>
+    </div>
+  </button>
+)}
 
                         {/* LOCATION BREAKDOWN */}
                         <div
