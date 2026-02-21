@@ -52,7 +52,7 @@ export default function Count() {
     }
 
     try {
-      const res = await axios.post(`${API}/upload/count`, {
+      const res = await axios.post(`${API}/count/count`, {
         tagNo: form.tagNo,
         partNo: form.partNo,
         location: form.location,
