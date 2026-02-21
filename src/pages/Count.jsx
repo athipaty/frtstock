@@ -4,6 +4,9 @@ import axios from "axios";
 
 const API = "https://center-kitchen-backend.onrender.com";
 
+const formatNumber = (n) =>
+  new Intl.NumberFormat("en-US").format(n);
+
 export default function Count() {
   const [form, setForm] = useState({
     tagNo: "",
@@ -286,7 +289,7 @@ export default function Count() {
             </label>
             <input
               className="w-full border px-2 py-1 rounded text-center bg-gray-50 font-semibold"
-              value={totalQty}
+              value={formatNumber(totalQty)}
               readOnly
             />
           </div>
@@ -327,7 +330,7 @@ export default function Count() {
               </div>
               <div>
                 <span className="font-medium">Total Qty:</span>{" "}
-                {lastSaved.totalQty}
+                {formatNumber(lastSaved.totalQty)}
               </div>
             </div>
           </div>
