@@ -96,7 +96,7 @@ export default function Count() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-3">
+    <div className="min-h-screen bg-gray-100 p-4">
               <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6
                 animate-fade-in">
         {/* Tag No */}
