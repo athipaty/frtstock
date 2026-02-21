@@ -1,18 +1,35 @@
 // pages/Variance.jsx
 import { useEffect, useState } from "react";
+import axios from "axios";
+
+const API = "https://center-kitchen-backend.onrender.com";
+
+const formatNumber = (n) =>
+  new Intl.NumberFormat("en-US").format(n);
 
 export default function Variance() {
-  // placeholder state (wire to real data later)
   const [variances, setVariances] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: fetch variance data
+    loadVariance();
   }, []);
+
+  const loadVariance = async () => {
+    try {
+      const res = await axios.get(`${API}/count/variance`);
+      setVariances(res.data);
+    } catch (err) {
+      console.error("Failed to load variance data", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6">
-        
+
         {/* Header */}
         <div>
           <h2 className="text-base font-semibold text-gray-800">
@@ -23,29 +40,61 @@ export default function Variance() {
           </p>
         </div>
 
-        {/* Content */}
-        {variances.length === 0 ? (
+        {/* Loading */}
+        {loading && (
+          <div className="text-sm text-gray-500 text-center py-8">
+            Loading variance data…
+          </div>
+        )}
+
+        {/* Empty */}
+        {!loading && variances.length === 0 && (
           <div className="text-sm text-gray-500 text-center py-8">
             No variances found.
           </div>
-        ) : (
+        )}
+
+        {/* Variance List */}
+        {!loading && variances.length > 0 && (
           <div className="space-y-3">
-            {variances.map((v, index) => (
-              <div
-                key={index}
-                className="border rounded-lg p-3 text-sm space-y-1"
-              >
-                <div className="font-medium text-gray-800">
-                  {v.partNo}
+            {variances.map((v, index) => {
+              const diff = v.actual - v.system;
+              const isShort = diff < 0;
+              const isExcess = diff > 0;
+
+              return (
+                <div
+                  key={index}
+                  className="border rounded-lg p-3 text-sm space-y-1"
+                >
+                  {/* Part No */}
+                  <div className="font-medium text-gray-800">
+                    {v.partNo}
+                  </div>
+
+                  {/* Quantities */}
+                  <div className="text-gray-600">
+                    Actual: {formatNumber(v.actual)} / System:{" "}
+                    {formatNumber(v.system)}
+                  </div>
+
+                  {/* Variance Status */}
+                  <div
+                    className={`text-xs font-medium ${
+                      isShort
+                        ? "text-red-600"
+                        : isExcess
+                        ? "text-green-600"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {isShort && `Short by ${formatNumber(Math.abs(diff))}`}
+                    {isExcess && `Excess by ${formatNumber(diff)}`}
+                    {diff === 0 && "Matched"}
+                  </div>
                 </div>
-                <div className="text-gray-600">
-                  Actual: {v.actual} / System: {v.system}
-                </div>
-                <div className="text-red-600 text-xs font-medium">
-                  Variance: {v.actual - v.system}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
