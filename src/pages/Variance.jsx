@@ -67,31 +67,33 @@ export default function Variance() {
                   key={index}
                   className="border rounded-lg p-3 text-sm space-y-1"
                 >
-                  {/* Part No */}
-                  <div className="font-medium text-gray-800">
-                    {v.partNo}
-                  </div>
+                  
+<div className="flex justify-between items-center text-xs">
+  {/* Part No */}
+  <span className="text-gray-700">
+    {v.partNo}
+  </span>
 
-                  {/* Quantities */}
-                  <div className="text-gray-600">
-                    Actual: {formatNumber(v.actual)} / System:{" "}
-                    {formatNumber(v.system)}
-                  </div>
+  {/* Result */}
+  <span
+    className={`font-medium ${
+      v.actual - v.system < 0
+        ? "text-red-600"
+        : v.actual - v.system > 0
+        ? "text-green-600"
+        : "text-gray-500"
+    }`}
+  >
+    {v.actual - v.system < 0 &&
+      `Short ${formatNumber(v.actual - v.system)}`}
+    {v.actual - v.system > 0 &&
+      `Excess +${formatNumber(v.actual - v.system)}`}
+    {v.actual - v.system === 0 && "Matched"}
+  </span>
+</div>
+                  
 
-                  {/* Variance Status */}
-                  <div
-                    className={`text-xs font-medium ${
-                      isShort
-                        ? "text-red-600"
-                        : isExcess
-                        ? "text-green-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {isShort && `Short by ${formatNumber(Math.abs(diff))}`}
-                    {isExcess && `Excess by ${formatNumber(diff)}`}
-                    {diff === 0 && "Matched"}
-                  </div>
+                  
                 </div>
               );
             })}
