@@ -47,7 +47,8 @@ export default function Upload() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow p-4 space-y-4">
+              <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-6
+                animate-fade-in">
         <h1 className="text-xl font-bold text-center">Upload Master Data</h1>
 
         {/* STATUS */}
