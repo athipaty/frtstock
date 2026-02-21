@@ -26,6 +26,29 @@ export default function Dashboard() {
   const percent = (actual, total) =>
     total ? Math.round((actual / total) * 100) : 0;
 
+  const AnimatedNumber = ({ value, duration = 500 }) => {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const step = Math.max(1, Math.floor(value / (duration / 16)));
+
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= value) {
+        start = value;
+        clearInterval(timer);
+      }
+      setDisplay(start);
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [value, duration]);
+
+  return <>{formatNumber(display)}</>;
+};
+
+
   /* ---------- Circle UI (presentation only) ---------- */
   const CircleProgress = ({
     label,
@@ -75,9 +98,10 @@ export default function Dashboard() {
         {/* Label + Number (RIGHT side) */}
         <div className="flex flex-col">
           <div className="text-l text-gray-600 text-right">{label}</div>
-          <div className="text-xs font-medium text-gray-800 text-right">
-            {formatNumber(actual)} / {formatNumber(system)}
-          </div>
+          <div className="text-sm font-medium text-gray-800">
+  <AnimatedNumber value={actual} /> / <AnimatedNumber value={system} />
+</div>
+
         </div>
       </div>
     );
