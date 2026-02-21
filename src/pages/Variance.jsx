@@ -260,7 +260,7 @@ export default function Variance() {
                                       {l.location}
                                     </div>
 
-                                    <div className="flex-1 text-center text-[11px]">
+                                    <div className="flex-1 text-[11px] text-left">
                                       <span>
                                         {l.boxes > 0 && (
                                           <span>
