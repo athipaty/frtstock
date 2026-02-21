@@ -52,10 +52,10 @@ export default function Upload() {
                   {/* Header */}
           <div>
             <h2 className="text-base font-semibold text-gray-800">
-              Upload master data
+              Upload Inventory Data
             </h2>
             <p className="text-xs text-gray-500">
-              
+              Upload your inventory count file to begin comparison.
             </p>
           </div>
 
