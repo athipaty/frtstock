@@ -57,7 +57,13 @@ export default function Variance() {
         {/* Variance List */}
         {!loading && variances.length > 0 && (
           <div className="space-y-3">
-            {variances.map((v, index) => {
+            {[...variances]
+  .sort(
+    (a, b) =>
+      Math.abs(a.actual - a.system) -
+      Math.abs(b.actual - b.system)
+  )
+  .map((v, index) => {
               const diff = v.actual - v.system;
               const isShort = diff < 0;
               const isExcess = diff > 0;
