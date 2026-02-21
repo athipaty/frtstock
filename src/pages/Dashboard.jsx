@@ -98,7 +98,7 @@ export default function Dashboard() {
         {/* Label + Number (RIGHT side) */}
         <div className="flex flex-col">
           <div className="text-l text-gray-600 text-right">{label}</div>
-          <div className="text-xs font-medium text-gray-800">
+          <div className="text-xs font-medium text-gray-800 text-right">
   <AnimatedNumber value={actual} /> / <AnimatedNumber value={system} />
 </div>
 
