@@ -120,8 +120,6 @@ export default function Variance() {
                           </span>
                         </div>
 
-                        <div className="border-t border-gray-100" />
-
                         {/* Actual */}
                         <button
                           onClick={() =>
@@ -135,9 +133,6 @@ export default function Variance() {
                           <div className="flex items-center gap-2">
                             <span className="font-medium">
                               {formatNumber(v.actual)}
-                            </span>
-                            <span className="text-gray-400">
-                              {isActualOpen ? "−" : "+"}
                             </span>
                           </div>
                         </button>
