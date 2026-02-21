@@ -70,7 +70,7 @@ export default function Variance() {
 
               return (
                 <div
-                  key={index}
+                  key={v.partNo}
                   className="border rounded-lg p-3 text-sm space-y-1"
                 >
                   
