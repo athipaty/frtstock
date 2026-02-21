@@ -28,10 +28,19 @@ export default function Variance() {
     }
   };
 
+  const togglePart = (partNo) => {
+    if (openPart === partNo) {
+      setOpenPart(null);
+      setOpenActual(null); // 🔧 reset nested toggle
+    } else {
+      setOpenPart(partNo);
+      setOpenActual(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
-              <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2
-                animate-fade-in">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2 animate-fade-in">
 
         {/* Header */}
         <div>
@@ -71,9 +80,7 @@ export default function Variance() {
                   >
                     {/* PART ROW */}
                     <button
-                      onClick={() =>
-                        setOpenPart(isOpen ? null : v.partNo)
-                      }
+                      onClick={() => togglePart(v.partNo)}
                       className="w-full flex justify-between items-center text-xs"
                     >
                       <span className="text-gray-700">
@@ -89,78 +96,79 @@ export default function Variance() {
                             : "text-gray-500"
                         }`}
                       >
-                        {diff < 0 &&
-                          `${formatNumber(diff)}`}
-                        {diff > 0 &&
-                          `+${formatNumber(diff)}`}
+                        {diff < 0 && formatNumber(diff)}
+                        {diff > 0 && `+${formatNumber(diff)}`}
                         {diff === 0 && "Matched"}
                       </span>
                     </button>
 
                     {/* EXPAND PART */}
                     <div
-  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-    isOpen
-      ? "max-h-96 opacity-100 mt-2"
-      : "max-h-0 opacity-0"
-  }`}
->
-                      <div className="text-xs text-gray-600 space-y-1 pl-2">
-                        <div className="flex justify-between items-center">
-  <span>System stock</span>
-  <span className="font-medium">
-    {formatNumber(v.system)}
-  </span>
-</div>
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isOpen
+                          ? "max-h-96 opacity-100 mt-2"
+                          : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <div className="text-xs text-gray-600 space-y-3 pl-2">
 
-                        {/* ACTUAL TOGGLE */}
-                        {v.locations?.length > 0 && (
-  <button
-    onClick={() =>
-      setOpenActual(isActualOpen ? null : v.partNo)
-    }
-    className="flex justify-between items-center w-full"
-  >
-    <span>Actual stock</span>
-    <div className="flex items-center gap-2">
-      <span className="font-medium">
-        {formatNumber(v.actual)}
-      </span>
-      <span className="text-gray-400">
-        {isActualOpen ? "−" : "+"}
-      </span>
-    </div>
-  </button>
-)}
+                        {/* System */}
+                        <div className="flex justify-between items-center">
+                          <span>System stock</span>
+                          <span className="font-medium">
+                            {formatNumber(v.system)}
+                          </span>
+                        </div>
+
+                        <div className="border-t border-gray-100" />
+
+                        {/* Actual */}
+                        <button
+                          onClick={() =>
+                            setOpenActual(
+                              isActualOpen ? null : v.partNo
+                            )
+                          }
+                          className="flex justify-between items-center w-full"
+                        >
+                          <span>Actual stock</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">
+                              {formatNumber(v.actual)}
+                            </span>
+                            <span className="text-gray-400">
+                              {isActualOpen ? "−" : "+"}
+                            </span>
+                          </div>
+                        </button>
 
                         {/* LOCATION BREAKDOWN */}
                         <div
-  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-    isActualOpen
-      ? "max-h-64 opacity-100 mt-1"
-      : "max-h-0 opacity-0"
-  }`}
->
+                          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                            isActualOpen
+                              ? "max-h-64 opacity-100"
+                              : "max-h-0 opacity-0"
+                          }`}
+                        >
                           <div className="pl-3 space-y-1">
-                            {v.locations?.map((l, i) => (
-                              <div
-                                key={i}
-                                className="flex justify-between text-xs text-gray-500"
-                              >
-                                <span>{l.location}</span>
-                                <span>
-                                  {formatNumber(l.qty)}
-                                </span>
-                              </div>
-                            ))}
-
-                            {!v.locations && (
-                              <div className="text-gray-400">
-                                No location data
+                            {v.locations?.length > 0 ? (
+                              v.locations.map((l, i) => (
+                                <div
+                                  key={i}
+                                  className="flex justify-between text-xs text-gray-500"
+                                >
+                                  <span>{l.location}</span>
+                                  <span>{formatNumber(l.qty)}</span>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-gray-400 italic">
+                                Location not recorded
                               </div>
                             )}
                           </div>
                         </div>
+
                       </div>
                     </div>
                   </div>
