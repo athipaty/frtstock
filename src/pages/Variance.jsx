@@ -41,25 +41,40 @@ export default function Variance() {
     loadVariance();
   };
 
-  return (
-    <div className="p-4">
-      <div>
-  <h2 className="text-base font-semibold text-gray-800">
-    Inventory Variance
-  </h2>
-  <p className="text-xs text-gray-500">
-    Highlights differences between actual counts and system records.
-  </p>
-</div>
-      {loading ? "Loading…" : (
-        <VarianceList
-          variances={variances}
-          openPart={openPart}
-          togglePart={setOpenPart}
-          onEditLocation={openEditLocation}
-        />
-      )}
 
+  return (
+    <div className="min-h-screen bg-gray-100 p-4 pb-20">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3">
+
+        {/* ✅ HEADER (put it back here) */}
+        <div>
+          <h2 className="text-base font-semibold text-gray-800">
+            Inventory Variance
+          </h2>
+          <p className="text-xs text-gray-500">
+            Highlights differences between actual counts and system records.
+          </p>
+        </div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="text-xs text-gray-500 text-center py-6">
+            Loading variance data…
+          </div>
+        )}
+
+        {/* List */}
+        {!loading && (
+          <VarianceList
+            variances={variances}
+            openPart={openPart}
+            togglePart={(p) => setOpenPart(openPart === p ? null : p)}
+            onEditLocation={openEditLocation}
+          />
+        )}
+      </div>
+
+      {/* ✅ Modal OUTSIDE the card */}
       <EditCountModal
         open={editOpen}
         loading={editLoading}
@@ -71,4 +86,5 @@ export default function Variance() {
       />
     </div>
   );
+
 }
