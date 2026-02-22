@@ -43,6 +43,14 @@ export default function Variance() {
 
   return (
     <div className="p-4">
+      <div>
+  <h2 className="text-base font-semibold text-gray-800">
+    Inventory Variance
+  </h2>
+  <p className="text-xs text-gray-500">
+    Highlights differences between actual counts and system records.
+  </p>
+</div>
       {loading ? "Loading…" : (
         <VarianceList
           variances={variances}
