@@ -350,7 +350,7 @@ export default function Variance() {
                                   <input
                                     className="w-full border px-2 py-1 rounded text-center bg-gray-50"
                                     value={editing.tagNo}
-                                    readOnly
+                               
                                   />
                                 </div>
 
@@ -361,7 +361,7 @@ export default function Variance() {
                                   <input
                                     className="w-full border px-2 py-1 rounded text-center bg-gray-50"
                                     value={editing.location}
-                                    readOnly
+                        
                                   />
                                 </div>
                               </div>
@@ -374,7 +374,7 @@ export default function Variance() {
                                 <input
                                   className="w-full border px-2 py-1 rounded text-center bg-gray-50"
                                   value={editing.partNo}
-                                  readOnly
+                                
                                 />
                               </div>
 
