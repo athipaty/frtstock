@@ -44,7 +44,7 @@ export default function Variance() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
 
         {/* ✅ HEADER (put it back here) */}
         <div>
