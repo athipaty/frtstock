@@ -64,6 +64,7 @@ export default function EditCountModal({
                   <input
                     className={`${inputCls} bg-gray-50 text-gray-700`}
                     value={data.tagNo || ""}
+                    onChange={(e) => onChange("tagNo", e.target.value)}
                   />
                 </div>
 
@@ -72,6 +73,7 @@ export default function EditCountModal({
                   <input
                     className={`${inputCls} bg-gray-50 text-gray-700`}
                     value={data.location || ""}
+                    onChange={(e) => onChange("location", e.target.value)}
                   />
                 </div>
               </div>
@@ -82,6 +84,7 @@ export default function EditCountModal({
                 <input
                   className={`${inputCls} bg-gray-50 text-gray-700`}
                   value={data.partNo || ""}
+                  onChange={(e) => onChange("partNo", e.target.value)}
                 />
               </div>
 
@@ -135,7 +138,6 @@ export default function EditCountModal({
                   <input
                     className="w-full border px-2 py-1 rounded text-center bg-gray-50 font-semibold"
                     value={formatNumber(totalQty)}
-
                   />
                 </div>
               </div>
