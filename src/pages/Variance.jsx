@@ -25,13 +25,37 @@ export default function Variance() {
   };
 
   const openEditLocation = async (partNo, location) => {
-    setEditOpen(true);
-    setEditLoading(true);
-    const res = await axios.get(
-      `${API}/count/latest?partNo=${partNo}&location=${location}`,
-    );
-    setEditing({ ...res.data, openBoxQty: String(res.data.openBoxQty ?? 0) });
-    setEditLoading(false);
+    try {
+      setEditMsg("");
+      setEditLoading(true);
+
+      const res = await axios.get(
+        `${API}/count/latest?partNo=${encodeURIComponent(partNo)}&location=${encodeURIComponent(location)}`,
+      );
+
+      const d = res.data;
+
+      if (!d || !d._id) {
+        throw new Error("Invalid record");
+      }
+
+      setEditing({
+        _id: d._id,
+        tagNo: d.tagNo ?? "",
+        partNo: d.partNo ?? partNo,
+        location: d.location ?? location,
+        qtyPerBox: String(d.qtyPerBox ?? ""),
+        boxes: String(d.boxes ?? ""),
+        openBoxQty: String(d.openBoxQty ?? 0),
+      });
+
+      setEditOpen(true); // ✅ open ONLY after editing is set
+    } catch (err) {
+      setEditMsg(err.response?.data?.error || "Failed to load record");
+      setEditOpen(false);
+    } finally {
+      setEditLoading(false);
+    }
   };
 
   const saveEdit = async () => {
@@ -41,11 +65,9 @@ export default function Variance() {
     loadVariance();
   };
 
-
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
-
         {/* ✅ HEADER (put it back here) */}
         <div>
           <h2 className="text-base font-semibold text-gray-800">
@@ -86,5 +108,4 @@ export default function Variance() {
       />
     </div>
   );
-
 }

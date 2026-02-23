@@ -39,7 +39,7 @@ export default function VarianceList({
 
             {/* EXPAND PART */}
             {isOpen && (
-              <div className="mt-2 space-y-2 text-xs text-gray-600 pl-2">
+              <div className="mt-2 space-y-2 text-xs text-gray-600 pl-2 animate-fade-in">
 
                 {/* ✅ SYSTEM STOCK */}
                 <div className="flex justify-between">
