@@ -26,7 +26,7 @@ export default function EditCountModal({
 
       {/* Bottom sheet / card */}
       <div className="relative w-full sm:max-w-md">
-        <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
           {/* Header (match Count page style) */}
           <div className="flex items-start justify-between gap-3">
             <div>
