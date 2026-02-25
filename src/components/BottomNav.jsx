@@ -14,6 +14,7 @@ export default function BottomNav() {
     { to: "/upload", label: "Upload", icon: <FiUpload /> },
     { to: "/count", label: "Count", icon: <FiEdit /> },
     { to: "/variance", label: "Result", icon: <FiBarChart2 /> },
+    { to: "/upload-stocktake", label: "Add", icon: <FiUpload /> },
   ];
 
   return (

@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
 import Count from "./pages/Count";
 import Variance from "./pages/Variance";
+import UploadStocktake from "./pages/UploadStocktake";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/upload" element={<Upload />} />
           <Route path="/count" element={<Count />} />
           <Route path="/variance" element={<Variance />} />
+          <Route path="/upload-stocktake" element={<UploadStocktake />} />
         </Routes>
       </div>
 
