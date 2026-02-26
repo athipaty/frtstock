@@ -1,5 +1,5 @@
 // pages/Count.jsx
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -16,11 +16,38 @@ export default function Count() {
     openBoxQty: "0", // ✅ default
   });
 
+  // add these refs
+  const partSuggestRef = useRef(null);
+  const locationSuggestRef = useRef(null);
+
+  // ✅ close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        partSuggestRef.current &&
+        !partSuggestRef.current.contains(e.target)
+      ) {
+        setPartSuggestions([]);
+      }
+      if (
+        locationSuggestRef.current &&
+        !locationSuggestRef.current.contains(e.target)
+      ) {
+        setLocationSuggestions([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const [message, setMessage] = useState("");
   const [recentCounts, setRecentCounts] = useState([]);
   const [partSuggestions, setPartSuggestions] = useState([]);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [lastSaved, setLastSaved] = useState(null);
+  const [partHighlight, setPartHighlight] = useState(-1);
+  const [locationHighlight, setLocationHighlight] = useState(-1);
 
   const tagInputRef = useRef(null);
 
@@ -131,6 +158,7 @@ export default function Count() {
   };
 
   const searchLocation = async (value) => {
+    setLocationHighlight(-1); // ✅ reset on new search
     if (!value) return setLocationSuggestions([]);
     try {
       const res = await axios.get(`${API}/upload/locations/search?q=${value}`);
@@ -141,6 +169,7 @@ export default function Count() {
   };
 
   const searchPartNo = async (value) => {
+    setPartHighlight(-1); // ✅ reset on new search
     if (!value) return setPartSuggestions([]);
     try {
       const res = await axios.get(`${API}/upload/parts/search?q=${value}`);
@@ -149,12 +178,70 @@ export default function Count() {
       setPartSuggestions([]);
     }
   };
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       submitCount();
     }
+  };
+  const handleLocationKeyDown = (e) => {
+    if (locationSuggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setLocationHighlight((prev) =>
+          Math.min(prev + 1, locationSuggestions.length - 1),
+        );
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setLocationHighlight((prev) => Math.max(prev - 1, 0));
+        return;
+      }
+      if (e.key === "Enter" && locationHighlight >= 0) {
+        e.preventDefault();
+        setForm({ ...form, location: locationSuggestions[locationHighlight] });
+        setLocationSuggestions([]);
+        setLocationHighlight(-1);
+        return;
+      }
+      if (e.key === "Escape") {
+        setLocationSuggestions([]);
+        setLocationHighlight(-1);
+        return;
+      }
+    }
+    if (e.key === "Enter") submitCount();
+  };
+
+  const handlePartKeyDown = (e) => {
+    if (partSuggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setPartHighlight((prev) =>
+          Math.min(prev + 1, partSuggestions.length - 1),
+        );
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setPartHighlight((prev) => Math.max(prev - 1, 0));
+        return;
+      }
+      if (e.key === "Enter" && partHighlight >= 0) {
+        e.preventDefault();
+        setForm({ ...form, partNo: partSuggestions[partHighlight] });
+        setPartSuggestions([]);
+        setPartHighlight(-1);
+        return;
+      }
+      if (e.key === "Escape") {
+        setPartSuggestions([]);
+        setPartHighlight(-1);
+        return;
+      }
+    }
+    if (e.key === "Enter") submitCount();
   };
 
   const inputCls = "w-full border px-2 py-1 rounded text-center";
@@ -187,8 +274,8 @@ export default function Count() {
             />
           </div>
 
-          {/* Location */}
-          <div className="space-y-1 relative flex-1">
+          {/* Location suggestions */}
+          <div className="space-y-1 relative flex-1" ref={locationSuggestRef}>
             <label className={labelCls}>Location</label>
             <input
               className={inputCls}
@@ -198,18 +285,23 @@ export default function Count() {
                 setForm({ ...form, location: e.target.value });
                 searchLocation(e.target.value);
               }}
-              onKeyDown={handleKeyDown}
+              onKeyDown={handleLocationKeyDown}
             />
-
+            {/* Location dropdown */}
             {locationSuggestions.length > 0 && (
               <div className="absolute z-10 w-full bg-white border rounded shadow text-sm">
                 {locationSuggestions.map((l, i) => (
                   <div
                     key={i}
-                    className="px-2 py-1 hover:bg-blue-50 cursor-pointer text-center"
+                    className={`px-2 py-1 cursor-pointer text-center ${
+                      i === locationHighlight
+                        ? "bg-blue-100 text-blue-700" // ✅ highlighted
+                        : "hover:bg-blue-50"
+                    }`}
                     onClick={() => {
                       setForm({ ...form, location: l });
                       setLocationSuggestions([]);
+                      setLocationHighlight(-1);
                     }}
                   >
                     {l}
@@ -220,8 +312,8 @@ export default function Count() {
           </div>
         </div>
 
-        {/* Part No */}
-        <div className="space-y-1 relative">
+        {/* Part No suggestions */}
+        <div className="space-y-1 relative" ref={partSuggestRef}>
           <label className={labelCls}>Part No</label>
           <input
             className={inputCls}
@@ -231,18 +323,23 @@ export default function Count() {
               setForm({ ...form, partNo: e.target.value });
               searchPartNo(e.target.value);
             }}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handlePartKeyDown}
           />
-
+          {/* Part No dropdown */}
           {partSuggestions.length > 0 && (
             <div className="absolute z-10 w-full bg-white border rounded shadow text-sm">
               {partSuggestions.map((p, i) => (
                 <div
                   key={i}
-                  className="px-2 py-2 hover:bg-blue-50 cursor-pointer text-center"
+                  className={`px-2 py-2 cursor-pointer text-center ${
+                    i === partHighlight
+                      ? "bg-blue-100 text-blue-700" // ✅ highlighted
+                      : "hover:bg-blue-50"
+                  }`}
                   onClick={() => {
                     setForm({ ...form, partNo: p });
                     setPartSuggestions([]);
+                    setPartHighlight(-1);
                   }}
                 >
                   {p}
