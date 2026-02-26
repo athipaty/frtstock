@@ -66,7 +66,7 @@ export default function UploadSystemStock() {
 
         <div className="rounded border bg-gray-50 p-3 text-xs text-gray-700 space-y-1">
           <div className="font-semibold text-gray-600">Excel columns required</div>
-          <div className="font-mono">partNo, systemQty</div>
+          <div className="font-mono">partNo, qty</div>
           <div className="text-[11px] text-gray-500">Each row represents one part number and its system quantity.</div>
         </div>
 
