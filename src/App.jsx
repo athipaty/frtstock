@@ -7,6 +7,7 @@ import Count from "./pages/Count";
 import Variance from "./pages/Variance";
 import UploadStocktake from "./pages/UploadStocktake";
 import Matched from "./pages/Matched"; // ✅ add this
+import Uncounted from "./pages/Uncounted";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/variance" element={<Variance />} />
           <Route path="/upload-stocktake" element={<UploadStocktake />} />
           <Route path="/matched" element={<Matched />} /> {/* ✅ add this */}
+          <Route path="/uncounted" element={<Uncounted />} />
         </Routes>
       </div>
       <BottomNav />

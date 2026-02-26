@@ -9,6 +9,7 @@ import {
   FiUpload,
   FiFileText,
   FiCheckCircle,
+  FiAlertCircle,
 } from "react-icons/fi";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -66,7 +67,6 @@ export default function BottomNav() {
                 <FiFileText className="text-2xl text-gray-600" />
                 <span className="text-[11px] text-gray-500">Master Data</span>
               </button>
-
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/upload-stocktake")}
@@ -74,7 +74,6 @@ export default function BottomNav() {
                 <FiUpload className="text-2xl text-gray-600" />
                 <span className="text-[11px] text-gray-500">Stock Take</span>
               </button>
-
               {/* ✅ Matched icon with badge */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50 relative"
@@ -89,6 +88,14 @@ export default function BottomNav() {
                   )}
                 </div>
                 <span className="text-[11px] text-gray-500">Matched</span>
+              </button>
+              // in the icon grid
+              <button
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
+                onClick={() => navigate("/uncounted")}
+              >
+                <FiAlertCircle className="text-2xl text-orange-500" />
+                <span className="text-[11px] text-gray-500">Uncounted</span>
               </button>
             </div>
 
