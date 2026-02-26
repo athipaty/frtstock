@@ -145,10 +145,12 @@ export default function EditCountModal({
               {/* Message (match Count page style) */}
               {message && (
                 <div
-                  className={`text-center text-sm p-2 ${
+                  className={`text-center text-sm p-2 rounded ${
                     message.toLowerCase().includes("success")
-                      ? "text-blue-700"
-                      : "text-red-700"
+                      ? "text-blue-700 bg-blue-50"
+                      : message.includes("⚠️")
+                        ? "text-orange-700 bg-orange-50 border border-orange-200" // ✅ duplicate warning
+                        : "text-red-700 bg-red-50"
                   }`}
                 >
                   {message}

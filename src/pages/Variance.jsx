@@ -66,8 +66,11 @@ export default function Variance() {
     setEditing(null);
     loadVariance();
   } catch (err) {
-    // ✅ show the error in the modal instead of silently failing
-    setEditMsg(err.response?.data?.error || "Failed to save. Please try again.");
+    if (err.response?.status === 409) {
+      setEditMsg("⚠️ Another record already exists with the same Part No + Location.");
+    } else {
+      setEditMsg(err.response?.data?.error || "Failed to save.");
+    }
   }
 };
 

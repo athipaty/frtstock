@@ -55,6 +55,27 @@ export default function Count() {
     }
 
     try {
+      // ✅ Check if record already exists for this part + location
+      const check = await axios.get(
+        `${API}/count/latest?partNo=${encodeURIComponent(form.partNo)}&location=${encodeURIComponent(form.location)}`,
+      );
+
+      // If found, ask user to confirm overwrite
+      if (check.data?._id) {
+        const confirm = window.confirm(
+          `⚠️ A count for ${form.partNo} at ${form.location} already exists (Qty: ${formatNumber(check.data.totalQty)}).\n\nDo you want to overwrite it?`,
+        );
+        if (!confirm) return;
+      }
+    } catch (err) {
+      // 404 = no existing record, safe to proceed
+      if (err.response?.status !== 404) {
+        return setMessage("Failed to check existing record.");
+      }
+    }
+
+    // proceed with save
+    try {
       const res = await axios.post(`${API}/count/count`, {
         tagNo: form.tagNo,
         partNo: form.partNo,
