@@ -249,7 +249,7 @@ export default function Count() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-1 animate-fade-in">
         {/* Header */}
         <div>
           <h2 className="text-base font-semibold text-gray-800">
@@ -412,12 +412,14 @@ export default function Count() {
           </div>
         </div>
 
-        <button
-          onClick={submitCount}
-          className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-2"
-        >
-          Save
-        </button>
+        <div className="">
+          <button
+            onClick={submitCount}
+            className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-4"
+          >
+            Save
+          </button>
+        </div>
 
         {message && (
           <div
