@@ -415,7 +415,7 @@ export default function Count() {
         <div className="">
           <button
             onClick={submitCount}
-            className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-4"
+            className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-3"
           >
             Save
           </button>

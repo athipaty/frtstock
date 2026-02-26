@@ -112,7 +112,9 @@ export default function UploadStocktake() {
 
         {/* Required columns */}
         <div className="rounded border bg-gray-50 p-3 text-xs text-gray-700 space-y-1">
-          <div className="font-semibold text-gray-600">Excel columns required</div>
+          <div className="font-semibold text-gray-600">
+            Excel columns required
+          </div>
           <div className="font-mono">
             tagNo, partNo, location, qtyPerBox, boxes, openBoxQty
           </div>
@@ -180,9 +182,7 @@ export default function UploadStocktake() {
             onClick={upload}
             disabled={!file || !confirm || uploading}
             className={`flex-1 py-2 rounded text-white text-sm ${
-              !file || !confirm || uploading
-                ? "bg-gray-400"
-                : "bg-blue-600"
+              !file || !confirm || uploading ? "bg-gray-400" : "bg-blue-600"
             }`}
           >
             {uploading ? "Uploading..." : "Upload"}
@@ -212,6 +212,12 @@ export default function UploadStocktake() {
                 <span className="font-medium">Inserted new records:</span>{" "}
                 {result.inserted}
               </div>
+              {result.merged > 0 && (
+                <div className="text-orange-600">
+                  <span className="font-medium">⚠️ Merged duplicate rows:</span>{" "}
+                  {result.merged}
+                </div>
+              )}
             </div>
           </div>
         )}
