@@ -9,6 +9,9 @@ import UploadStocktake from "./pages/UploadStocktake";
 import Matched from "./pages/Matched"; // ✅ add this
 import Uncounted from "./pages/Uncounted";
 import Unrecognized from "./pages/Unrecognized";
+import UploadSystemStock from "./pages/UploadSystemStock";
+import UploadTagList from "./pages/UploadTagList";
+import UploadLocationList from "./pages/UploadLocationList";
 
 export default function App() {
   return (
@@ -23,6 +26,9 @@ export default function App() {
           <Route path="/matched" element={<Matched />} /> {/* ✅ add this */}
           <Route path="/uncounted" element={<Uncounted />} />
           <Route path="/unrecognized" element={<Unrecognized />} />
+          <Route path="/upload/system-stock" element={<UploadSystemStock />} />
+          <Route path="/upload/tags" element={<UploadTagList />} />
+          <Route path="/upload/locations" element={<UploadLocationList />} />
         </Routes>
       </div>
       <BottomNav />

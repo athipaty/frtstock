@@ -1,176 +1,40 @@
-// pages/Upload.jsx
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 
-const API = "https://center-kitchen-backend.onrender.com";
-
 export default function Upload() {
-  const [systemFile, setSystemFile] = useState(null);
-  const [tagFile, setTagFile] = useState(null);
-  const [message, setMessage] = useState("");
-  const [status, setStatus] = useState(null);
-  const [locationFile, setLocationFile] = useState(null);
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get("tab"); // "system" | "tags" | "locations"
 
-  const loadStatus = async () => {
-    try {
-      const res = await axios.get(`${API}/upload/status`);
-      setStatus(res.data);
-    } catch {
-      setStatus(null);
-    }
-  };
-
+  // auto scroll to the right section
   useEffect(() => {
-    loadStatus();
-  }, []);
-
-  const uploadFile = async (file, endpoint) => {
-    if (!file) {
-      setMessage("Please select a file first");
-      return;
+    if (tab) {
+      const el = document.getElementById(tab);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  }, [tab]);
 
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      await axios.post(`${API}${endpoint}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setMessage("Upload successful");
-      loadStatus(); // 👈 refresh status after upload
-    } catch (err) {
-      setMessage(err.response?.data?.error || "Upload failed");
-    }
-  };
+  // ... rest of your existing code
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-              <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2
-                animate-fade-in">
-                  {/* Header */}
-          <div>
-            <h2 className="text-base font-semibold text-gray-800">
-              Upload Inventory Data
-            </h2>
-            <p className="text-xs text-gray-500">
-              Upload your inventory count file to begin comparison.
-            </p>
-          </div>
-
-        {/* STATUS */}
-        {status && (
-          <div className="text-sm space-y-1">
-            <div>
-              System Stock:{" "}
-              {status.systemStock.uploaded ? (
-                <span className="text-blue-700">
-                  Uploaded ({status.systemStock.count})
-                </span>
-              ) : (
-                <span className="text-red-600">Not uploaded</span>
-              )}
-            </div>
-
-            <div>
-              Tag List:{" "}
-              {status.tagList.uploaded ? (
-                <span className="text-blue-700">
-                  Uploaded ({status.tagList.count})
-                </span>
-              ) : (
-                <span className="text-red-600">Not uploaded</span>
-              )}
-            </div>
-
-            <div>
-              Location List:{" "}
-              {status.locationList.uploaded ? (
-                <span className="text-blue-700">
-                  Uploaded ({status.locationList.count})
-                </span>
-              ) : (
-                <span className="text-red-600">Not uploaded</span>
-              )}
-            </div>
-          </div>
-        )}
-
-        <hr />
-
-        {/* System Stock Upload */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-500">
-            System Stock (Excel)
-          </label>
-          <input
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={(e) => setSystemFile(e.target.files[0])}
-            className="w-full text-sm"
-          />
-          <button
-            onClick={() => uploadFile(systemFile, "/upload/system-stock")}
-            className="w-full bg-blue-600 text-white py-2 rounded text-sm"
-          >
-            Upload System Stock
-          </button>
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2 animate-fade-in">
+        
+        {/* System Stock */}
+        <div id="system" className="space-y-1 scroll-mt-4">  {/* ✅ add id */}
+          ...
         </div>
 
-        <hr />
-
-        {/* Tag List Upload */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-500">
-            Tag List (Excel)
-          </label>
-          <input
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={(e) => setTagFile(e.target.files[0])}
-            className="w-full text-sm"
-          />
-          <button
-            onClick={() => uploadFile(tagFile, "/upload/tags")}
-            className="w-full bg-green-600 text-white py-2 rounded text-sm"
-          >
-            Upload Tag List
-          </button>
+        {/* Tag List */}
+        <div id="tags" className="space-y-1 scroll-mt-4">  {/* ✅ add id */}
+          ...
         </div>
 
-        <hr />
-
-        {/* Location List Upload */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-500">
-            Location List (Excel)
-          </label>
-          <input
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={(e) => setLocationFile(e.target.files[0])}
-            className="w-full text-sm"
-          />
-          <button
-            onClick={() => uploadFile(locationFile, "/upload/locations")}
-            className="w-full bg-purple-600 text-white py-2 rounded text-sm"
-          >
-            Upload Location List
-          </button>
+        {/* Location List */}
+        <div id="locations" className="space-y-1 scroll-mt-4">  {/* ✅ add id */}
+          ...
         </div>
 
-        {message && (
-          <div
-            className={`text-center text-sm p-2 rounded ${
-              message === "Upload successful"
-                ? "text-blue-700 bg-blue-50"
-                : "text-red-700 bg-red-50"
-            }`}
-          >
-            {message}
-          </div>
-        )}
       </div>
     </div>
   );
