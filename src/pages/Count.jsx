@@ -4,8 +4,7 @@ import axios from "axios";
 
 const API = "https://center-kitchen-backend.onrender.com";
 
-const formatNumber = (n) =>
-  new Intl.NumberFormat("en-US").format(n);
+const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
 
 export default function Count() {
   const [form, setForm] = useState({
@@ -39,19 +38,19 @@ export default function Count() {
     }
 
     // Validate numeric inputs
-    if (form.qtyPerBox === "" || form.boxes === "" || form.openBoxQty === "") {
-      return setMessage("Please fill Qty/Box, Boxes, Open Box Qty");
+    if (form.openBoxQty === "") {
+      return setMessage("Please fill Open Box Qty");
     }
 
-    if ([qtyPerBoxNum, boxesNum, openBoxNum].some((n) => Number.isNaN(n))) {
-      return setMessage("Qty/Box, Boxes, Open Box Qty must be numbers");
+    if (Number.isNaN(openBoxNum)) {
+      return setMessage("Open Box Qty must be a number");
     }
 
-    if (qtyPerBoxNum < 0 || boxesNum < 0 || openBoxNum < 0) {
-      return setMessage("Numbers cannot be negative");
+    if (openBoxNum < 0) {
+      return setMessage("Open Box Qty cannot be negative");
     }
 
-    if (!Number.isInteger(boxesNum)) {
+    if (boxesNum && !Number.isInteger(boxesNum)) {
       return setMessage("Boxes must be an integer");
     }
 
@@ -60,8 +59,8 @@ export default function Count() {
         tagNo: form.tagNo,
         partNo: form.partNo,
         location: form.location,
-        qtyPerBox: qtyPerBoxNum,
-        boxes: boxesNum,
+        qtyPerBox: form.qtyPerBox === "" ? 0 : qtyPerBoxNum,
+        boxes: form.boxes === "" ? 0 : boxesNum,
         openBoxQty: form.openBoxQty === "" ? 0 : openBoxNum, // ✅
       });
 
@@ -304,12 +303,15 @@ export default function Count() {
 
         {message && (
           <div
-            className={`text-center text-sm p-2 ${
+            className={`text-center text-sm p-2 rounded ${
               message === "Count saved successfully"
-                ? "text-blue-700"
-                : "text-red-700"
+                ? "text-blue-700 bg-blue-50"
+                : message.includes("already exists")
+                  ? "text-orange-700 bg-orange-50 border border-orange-200" // ✅ duplicate warning
+                  : "text-red-700 bg-red-50"
             }`}
           >
+            {message.includes("already exists") ? "⚠️ " : ""}
             {message}
           </div>
         )}

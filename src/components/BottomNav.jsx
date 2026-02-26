@@ -33,7 +33,7 @@ export default function BottomNav() {
           />
 
           {/* Sheet */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t shadow-lg p-3">
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t shadow-lg p-3 animate-fade-in">
             <div className="text-sm font-semibold text-gray-800 px-2 pb-2">
               More
             </div>

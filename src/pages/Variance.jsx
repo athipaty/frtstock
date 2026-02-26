@@ -59,11 +59,17 @@ export default function Variance() {
   };
 
   const saveEdit = async () => {
+  try {
+    setEditMsg("");
     await axios.put(`${API}/count/${editing._id}`, editing);
     setEditOpen(false);
     setEditing(null);
     loadVariance();
-  };
+  } catch (err) {
+    // ✅ show the error in the modal instead of silently failing
+    setEditMsg(err.response?.data?.error || "Failed to save. Please try again.");
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
