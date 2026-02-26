@@ -10,6 +10,7 @@ import {
   FiFileText,
   FiCheckCircle,
   FiAlertCircle,
+  FiXCircle,
 } from "react-icons/fi";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -21,6 +22,7 @@ export default function BottomNav() {
   const [matchedCount, setMatchedCount] = useState(0); // ✅ add this
   const [varianceCount, setVarianceCount] = useState(0); // ✅ add this
   const [uncountedCount, setUncountedCount] = useState(0);
+  const [unrecognizedCount, setUnrecognizedCount] = useState(0);
 
   useEffect(() => {
     setMoreOpen(false);
@@ -30,14 +32,18 @@ export default function BottomNav() {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [matchedRes, varianceRes, uncountedRes] = await Promise.all([
-          axios.get(`${API}/count/matched`),
-          axios.get(`${API}/count/variance`),
-          axios.get(`${API}/count/uncounted`), // ✅ add this
-        ]);
+        // add to Promise.all
+        const [matchedRes, varianceRes, uncountedRes, unrecognizedRes] =
+          await Promise.all([
+            axios.get(`${API}/count/matched`),
+            axios.get(`${API}/count/variance`),
+            axios.get(`${API}/count/uncounted`),
+            axios.get(`${API}/count/unrecognized`), // ✅
+          ]);
         setMatchedCount(matchedRes.data.length);
         setVarianceCount(varianceRes.data.length);
-        setUncountedCount(uncountedRes.data.length); // ✅ add this
+        setUncountedCount(uncountedRes.data.length);
+        setUnrecognizedCount(unrecognizedRes.data.length); // ✅
       } catch {
         setMatchedCount(0);
         setVarianceCount(0);
@@ -107,6 +113,21 @@ export default function BottomNav() {
                   )}
                 </div>
                 <span className="text-[11px] text-gray-500">Uncounted</span>
+              </button>
+
+              <button
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
+                onClick={() => navigate("/unrecognized")}
+              >
+                <div className="relative">
+                  <FiXCircle className="text-2xl text-gray-600" />
+                  {unrecognizedCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
+                      {unrecognizedCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[11px] text-gray-500">Unrecognized</span>
               </button>
             </div>
 
