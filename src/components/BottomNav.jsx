@@ -170,7 +170,7 @@ export default function BottomNav() {
                 </span>
               )}
             </div>
-            <div>Result</div>
+            <div>Gap</div>
           </Link>
           <button
             onClick={() => setMoreOpen((v) => !v)}
