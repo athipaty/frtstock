@@ -159,10 +159,10 @@ export default function BottomNav() {
                     onClick={() => navigate("/upload/system-stock")}
                   >
                     <div className="relative">
-                      <FiDatabase className="text-xl text-blue-500" />
+                      <FiDatabase className="text-2xl text-blue-500" />
                       <GreenCheck show={uploadStatus?.systemStock?.uploaded} />
                     </div>
-                    <span className="text-[10px] text-gray-500 text-center">
+                    <span className="text-[11px] text-gray-500 text-center">
                       System Stock
                     </span>
                   </button>
@@ -172,10 +172,10 @@ export default function BottomNav() {
                     onClick={() => navigate("/upload/tags")}
                   >
                     <div className="relative">
-                      <FiTag className="text-xl text-blue-500" />
+                      <FiTag className="text-2xl text-blue-500" />
                       <GreenCheck show={uploadStatus?.tagList?.uploaded} />
                     </div>
-                    <span className="text-[10px] text-gray-500 text-center">
+                    <span className="text-[11px] text-gray-500 text-center">
                       Tag List
                     </span>
                   </button>
@@ -185,10 +185,10 @@ export default function BottomNav() {
                     onClick={() => navigate("/upload/locations")}
                   >
                     <div className="relative">
-                      <FiGrid className="text-xl text-blue-500" />
+                      <FiGrid className="text-2xl text-blue-500" />
                       <GreenCheck show={uploadStatus?.locationList?.uploaded} />
                     </div>
-                    <span className="text-[10px] text-gray-500 text-center">
+                    <span className="text-[11px] text-gray-500 text-center">
                       Location List
                     </span>
                   </button>
@@ -198,7 +198,7 @@ export default function BottomNav() {
                     onClick={() => navigate("/upload-stocktake")}
                   >
                     <div className="relative">
-                      <FiPackage className="text-xl text-blue-500" />
+                      <FiPackage className="text-2xl text-blue-500" />
                       {/* ✅ green check if any physical counts exist */}
                       <GreenCheck
                         show={
@@ -207,7 +207,7 @@ export default function BottomNav() {
                         }
                       />
                     </div>
-                    <span className="text-[10px] text-gray-500 text-center">
+                    <span className="text-[11px] text-gray-500 text-center">
                       Upload Count
                     </span>
                   </button>

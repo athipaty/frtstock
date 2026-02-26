@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API = "https://center-kitchen-backend.onrender.com";
 
-export default function UploadLocationList() {
+export default function UploadSystemStock() {
   const inputRef = useRef(null);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -26,7 +26,12 @@ export default function UploadLocationList() {
     if (!f) return setFile(null);
     const isXlsx = f.name.toLowerCase().endsWith(".xlsx") ||
       f.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    if (!isXlsx) { setFile(null); setError("Please upload an .xlsx Excel file"); if (inputRef.current) inputRef.current.value = ""; return; }
+    if (!isXlsx) {
+      setFile(null);
+      setError("Please upload an .xlsx Excel file");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
     setFile(f);
   };
 
@@ -36,7 +41,7 @@ export default function UploadLocationList() {
       setUploading(true); setError(""); setDetails([]); setResult(null);
       const form = new FormData();
       form.append("file", file);
-      const res = await axios.post(`${API}/upload/locations`, form, {
+      const res = await axios.post(`${API}/upload/system-stock`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResult({ inserted: res.data?.count ?? 0 });
@@ -55,14 +60,14 @@ export default function UploadLocationList() {
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3 animate-fade-in">
         <div>
-          <h2 className="text-base font-semibold text-gray-800">Upload Location List</h2>
-          <p className="text-xs text-gray-500">Upload the list of warehouse locations for stock counting.</p>
+          <h2 className="text-base font-semibold text-gray-800">Upload System Stock</h2>
+          <p className="text-xs text-gray-500">Upload system stock data to compare against physical counts.</p>
         </div>
 
         <div className="rounded border bg-gray-50 p-3 text-xs text-gray-700 space-y-1">
           <div className="font-semibold text-gray-600">Excel columns required</div>
-          <div className="font-mono">location</div>
-          <div className="text-[11px] text-gray-500">Each row represents one warehouse location code.</div>
+          <div className="font-mono">partNo, systemQty</div>
+          <div className="text-[11px] text-gray-500">Each row represents one part number and its system quantity.</div>
         </div>
 
         <div className="space-y-1">
@@ -85,7 +90,7 @@ export default function UploadLocationList() {
 
         <div className="flex gap-2">
           <button onClick={upload} disabled={!file || uploading}
-            className={`flex-1 py-2 rounded text-white text-sm ${!file || uploading ? "bg-gray-400" : "bg-purple-600"}`}>
+            className={`flex-1 py-2 rounded text-white text-sm ${!file || uploading ? "bg-gray-400" : "bg-blue-600"}`}>
             {uploading ? "Uploading..." : "Upload"}
           </button>
           <button onClick={resetAll} disabled={uploading} className="px-3 py-2 rounded text-sm border">Reset</button>
@@ -95,7 +100,7 @@ export default function UploadLocationList() {
           <div className="mt-2 rounded border border-green-200 bg-green-50 p-3 text-sm">
             <div className="text-green-700 font-medium">✅ Upload completed</div>
             <div className="mt-1 text-gray-700 text-xs">
-              <div><span className="font-medium">Locations uploaded:</span> {result.inserted}</div>
+              <div><span className="font-medium">Records uploaded:</span> {result.inserted}</div>
             </div>
           </div>
         )}
