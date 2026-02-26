@@ -99,7 +99,7 @@ export default function BottomNav() {
                 onClick={() => navigate("/uncounted")}
               >
                 <div className="relative">
-                  <FiAlertCircle className="text-2xl text-orange-500" />
+                  <FiAlertCircle className="text-2xl text-gray-600" />
                   {uncountedCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
                       {uncountedCount}
