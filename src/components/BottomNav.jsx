@@ -18,22 +18,28 @@ export default function BottomNav() {
   const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
   const [matchedCount, setMatchedCount] = useState(0); // ✅ add this
+  const [varianceCount, setVarianceCount] = useState(0); // ✅ add this
 
   useEffect(() => {
     setMoreOpen(false);
   }, [location.pathname]);
 
-  // ✅ fetch matched count on mount
+  // ✅ fetch variance count on mount
   useEffect(() => {
-    const fetchMatchedCount = async () => {
+    const fetchCounts = async () => {
       try {
-        const res = await axios.get(`${API}/count/matched`);
-        setMatchedCount(res.data.length);
+        const [matchedRes, varianceRes] = await Promise.all([
+          axios.get(`${API}/count/matched`),
+          axios.get(`${API}/count/variance`),
+        ]);
+        setMatchedCount(matchedRes.data.length);
+        setVarianceCount(varianceRes.data.length); // ✅ add this
       } catch {
         setMatchedCount(0);
+        setVarianceCount(0);
       }
     };
-    fetchMatchedCount();
+    fetchCounts();
   }, []);
 
   const isActive = (to) =>
@@ -117,7 +123,14 @@ export default function BottomNav() {
             to="/variance"
             className={`flex flex-col items-center py-2 ${isActive("/variance") ? "text-blue-600" : "text-gray-400"}`}
           >
-            <FiBarChart2 className="text-lg" />
+            <div className="relative">
+              <FiBarChart2 className="text-lg" />
+              {varianceCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
+                  {varianceCount}
+                </span>
+              )}
+            </div>
             <div>Result</div>
           </Link>
           <button
