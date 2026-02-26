@@ -21,7 +21,7 @@ export default function Uncounted() {
   };
 
   const filtered = uncounted.filter((v) =>
-    v.partNo.toLowerCase().includes(search.toLowerCase())
+    v.partNo.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -46,7 +46,7 @@ export default function Uncounted() {
         <div className="relative">
           <input
             className="w-full border px-3 py-1.5 rounded-lg text-sm pl-8 focus:outline-none focus:ring-1 focus:ring-blue-300"
-            placeholder="Search part no..."
+            placeholder={`Search part no. (${uncounted.length} parts)`}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);

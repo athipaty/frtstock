@@ -48,7 +48,7 @@ export default function Matched() {
         <div className="relative">
           <input
             className="w-full border px-3 py-1.5 rounded-lg text-sm pl-8 focus:outline-none focus:ring-1 focus:ring-blue-300"
-            placeholder="Search part no..."
+            placeholder={`Search part no. (${matched.length} parts)`}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
