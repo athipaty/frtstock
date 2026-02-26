@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios"; // ✅ add this
 import {
   FiHome,
   FiEdit,
@@ -7,75 +8,86 @@ import {
   FiMoreHorizontal,
   FiUpload,
   FiFileText,
+  FiCheckCircle,
 } from "react-icons/fi";
+
+const API = "https://center-kitchen-backend.onrender.com";
 
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [matchedCount, setMatchedCount] = useState(0); // ✅ add this
 
   useEffect(() => {
     setMoreOpen(false);
   }, [location.pathname]);
+
+  // ✅ fetch matched count on mount
+  useEffect(() => {
+    const fetchMatchedCount = async () => {
+      try {
+        const res = await axios.get(`${API}/count/matched`);
+        setMatchedCount(res.data.length);
+      } catch {
+        setMatchedCount(0);
+      }
+    };
+    fetchMatchedCount();
+  }, []);
 
   const isActive = (to) =>
     to === "/" ? location.pathname === "/" : location.pathname.startsWith(to);
 
   return (
     <>
-      {/* ===== MORE MENU (BOTTOM SHEET) ===== */}
       {moreOpen && (
         <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/30"
             onClick={() => setMoreOpen(false)}
           />
-
-          {/* Sheet */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t shadow-lg p-3 animate-fade-in">
-            <div className="text-sm font-semibold text-gray-800 px-2 pb-2">
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl border-t shadow-lg p-4 animate-fade-in">
+            <div className="text-sm font-semibold text-gray-800 px-2 pb-3">
               More
             </div>
 
-            {/* ✅ Upload Master (your Upload.jsx) */}
-            <button
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 text-sm"
-              onClick={() => {
-                setMoreOpen(false);
-                navigate("/upload");
-              }}
-            >
-              <FiFileText className="text-lg" />
-              <div className="text-left">
-                <div className="font-medium text-gray-800">Upload Master</div>
-                <div className="text-xs text-gray-500">
-                  Upload parts / locations
-                </div>
-              </div>
-            </button>
+            <div className="flex justify-around pb-2">
+              <button
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
+                onClick={() => navigate("/upload")}
+              >
+                <FiFileText className="text-2xl text-gray-600" />
+                <span className="text-[11px] text-gray-500">Master Data</span>
+              </button>
 
-            {/* ✅ Upload Stocktake */}
-            <button
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 text-sm"
-              onClick={() => {
-                setMoreOpen(false);
-                navigate("/upload-stocktake");
-              }}
-            >
-              <FiUpload className="text-lg" />
-              <div className="text-left">
-                <div className="font-medium text-gray-800">
-                  Upload Stocktake
+              <button
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
+                onClick={() => navigate("/upload-stocktake")}
+              >
+                <FiUpload className="text-2xl text-gray-600" />
+                <span className="text-[11px] text-gray-500">Stock Take</span>
+              </button>
+
+              {/* ✅ Matched icon with badge */}
+              <button
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50 relative"
+                onClick={() => navigate("/matched")}
+              >
+                <div className="relative">
+                  <FiCheckCircle className="text-2xl text-gray-600" />
+                  {matchedCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
+                      {matchedCount}
+                    </span>
+                  )}
                 </div>
-                <div className="text-xs text-gray-500">
-                  Replace counts from Excel
-                </div>
-              </div>
-            </button>
+                <span className="text-[11px] text-gray-500">Matched</span>
+              </button>
+            </div>
 
             <button
-              className="mt-2 w-full py-2 text-sm text-gray-500"
+              className="mt-2 w-full py-2 text-sm text-gray-400"
               onClick={() => setMoreOpen(false)}
             >
               Close
@@ -84,44 +96,33 @@ export default function BottomNav() {
         </div>
       )}
 
-      {/* ===== BOTTOM NAV ===== */}
+      {/* BOTTOM NAV */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-sm">
         <div className="flex justify-around text-xs">
           <Link
             to="/"
-            className={`flex flex-col items-center py-2 ${
-              isActive("/") ? "text-blue-600" : "text-gray-400"
-            }`}
+            className={`flex flex-col items-center py-2 ${isActive("/") ? "text-blue-600" : "text-gray-400"}`}
           >
             <FiHome className="text-lg" />
             <div>Dashboard</div>
           </Link>
-
           <Link
             to="/count"
-            className={`flex flex-col items-center py-2 ${
-              isActive("/count") ? "text-blue-600" : "text-gray-400"
-            }`}
+            className={`flex flex-col items-center py-2 ${isActive("/count") ? "text-blue-600" : "text-gray-400"}`}
           >
             <FiEdit className="text-lg" />
             <div>Count</div>
           </Link>
-
           <Link
             to="/variance"
-            className={`flex flex-col items-center py-2 ${
-              isActive("/variance") ? "text-blue-600" : "text-gray-400"
-            }`}
+            className={`flex flex-col items-center py-2 ${isActive("/variance") ? "text-blue-600" : "text-gray-400"}`}
           >
             <FiBarChart2 className="text-lg" />
             <div>Result</div>
           </Link>
-
           <button
             onClick={() => setMoreOpen((v) => !v)}
-            className={`flex flex-col items-center py-2 ${
-              moreOpen ? "text-blue-600" : "text-gray-400"
-            }`}
+            className={`flex flex-col items-center py-2 ${moreOpen ? "text-blue-600" : "text-gray-400"}`}
             type="button"
           >
             <FiMoreHorizontal className="text-lg" />

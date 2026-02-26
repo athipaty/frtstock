@@ -13,6 +13,7 @@ export default function Variance() {
   const [editOpen, setEditOpen] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
   const [editMsg, setEditMsg] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadVariance();
@@ -58,21 +59,28 @@ export default function Variance() {
     }
   };
 
+  // filter variances by partNo
+  const filtered = variances.filter((v) =>
+    v.partNo.toLowerCase().includes(search.toLowerCase()),
+  );
+
   const saveEdit = async () => {
-  try {
-    setEditMsg("");
-    await axios.put(`${API}/count/${editing._id}`, editing);
-    setEditOpen(false);
-    setEditing(null);
-    loadVariance();
-  } catch (err) {
-    if (err.response?.status === 409) {
-      setEditMsg("⚠️ Another record already exists with the same Part No + Location.");
-    } else {
-      setEditMsg(err.response?.data?.error || "Failed to save.");
+    try {
+      setEditMsg("");
+      await axios.put(`${API}/count/${editing._id}`, editing);
+      setEditOpen(false);
+      setEditing(null);
+      loadVariance();
+    } catch (err) {
+      if (err.response?.status === 409) {
+        setEditMsg(
+          "⚠️ Another record already exists with the same Part No + Location.",
+        );
+      } else {
+        setEditMsg(err.response?.data?.error || "Failed to save.");
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
@@ -94,13 +102,39 @@ export default function Variance() {
           </div>
         )}
 
+        {/* Search */}
+        <div className="relative">
+          <input
+            className="w-full border px-3 py-1.5 rounded-lg text-sm pl-8 focus:outline-none focus:ring-1 focus:ring-blue-300"
+            placeholder="Search part no..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+            🔍
+          </span>
+          {search && (
+            <button
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
+              onClick={() => setSearch("")}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
         {/* List */}
         {!loading && (
           <VarianceList
-            variances={variances}
+            variances={filtered}
             openPart={openPart}
             togglePart={(p) => setOpenPart(openPart === p ? null : p)}
             onEditLocation={openEditLocation}
+            search={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setOpenPart(null); // ✅ collapse open rows
+            }}
           />
         )}
       </div>

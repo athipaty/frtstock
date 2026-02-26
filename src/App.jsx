@@ -6,11 +6,11 @@ import Upload from "./pages/Upload";
 import Count from "./pages/Count";
 import Variance from "./pages/Variance";
 import UploadStocktake from "./pages/UploadStocktake";
+import Matched from "./pages/Matched"; // ✅ add this
 
 export default function App() {
   return (
     <BrowserRouter>
-      {/* Main content */}
       <div className="pb-16">
         <Routes>
           <Route path="/" element={<Dashboard />} />
@@ -18,10 +18,9 @@ export default function App() {
           <Route path="/count" element={<Count />} />
           <Route path="/variance" element={<Variance />} />
           <Route path="/upload-stocktake" element={<UploadStocktake />} />
+          <Route path="/matched" element={<Matched />} /> {/* ✅ add this */}
         </Routes>
       </div>
-
-      {/* Bottom navigation */}
       <BottomNav />
     </BrowserRouter>
   );

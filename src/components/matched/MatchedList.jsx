@@ -1,26 +1,19 @@
-import LocationRow from "./LocationRow";
 import { formatNumber } from "../../utils/number";
 
-export default function VarianceList({
-  variances,
-  openPart,
-  togglePart,
-  onEditLocation,
-  search,
-}) {
+export default function MatchedList({ matched, openPart, togglePart }) {
+  if (matched.length === 0) {
+    return (
+      <div className="text-xs text-gray-400 text-center py-6 italic">
+        No matched parts found.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2">
-      {[...variances]
-        .sort((a, b) => {
-          // ✅ matched parts float to top, rest sorted by variance
-          const aMatch = a.partNo.toLowerCase().includes(search.toLowerCase());
-          const bMatch = b.partNo.toLowerCase().includes(search.toLowerCase());
-          if (aMatch && !bMatch) return -1;
-          if (!aMatch && bMatch) return 1;
-          return a.actual - a.system - (b.actual - b.system);
-        })
+      {[...matched]
+        .sort((a, b) => a.partNo.localeCompare(b.partNo))
         .map((v) => {
-          const diff = v.actual - v.system;
           const isOpen = openPart === v.partNo;
 
           return (
@@ -31,34 +24,18 @@ export default function VarianceList({
                 className="w-full flex justify-between items-center text-xs"
               >
                 <span className="text-gray-700">{v.partNo}</span>
-
-                <span
-                  className={`font-medium ${
-                    diff < 0
-                      ? "text-red-600"
-                      : diff > 0
-                        ? "text-green-600"
-                        : "text-gray-500"
-                  }`}
-                >
-                  {diff < 0 && formatNumber(diff)}
-                  {diff > 0 && `+${formatNumber(diff)}`}
-                  {diff === 0 && "Matched"}
-                </span>
+                <span className="font-medium text-green-600">✓ Matched</span>
               </button>
 
-              {/* EXPAND PART */}
+              {/* EXPAND */}
               {isOpen && (
                 <div className="mt-2 space-y-2 text-xs text-gray-600 pl-2 animate-fade-in">
-                  {/* ✅ SYSTEM STOCK */}
                   <div className="flex justify-between">
                     <span>System stock</span>
                     <span className="font-medium">
                       {formatNumber(v.system)}
                     </span>
                   </div>
-
-                  {/* ✅ ACTUAL STOCK */}
                   <div className="flex justify-between">
                     <span>Actual stock</span>
                     <span className="font-medium">
@@ -72,12 +49,33 @@ export default function VarianceList({
                       [...v.locations]
                         .sort((a, b) => a.location.localeCompare(b.location)) // ✅ A-Z
                         .map((l, i) => (
-                          <LocationRow
+                          <div
                             key={i}
-                            partNo={v.partNo}
-                            data={l}
-                            onEdit={onEditLocation}
-                          />
+                            className="flex justify-between text-xs text-gray-500 border-b last:border-b-0 pb-1"
+                          >
+                            <div className="font-medium text-gray-700 flex-1">
+                              {l.location}
+                            </div>
+                            <div className="flex-1 text-[11px]">
+                              {l.boxes > 0 && (
+                                <span>
+                                  {l.qtyPerBox} × {l.boxes}
+                                </span>
+                              )}
+                              {l.openBoxQty > 0 && (
+                                <span>
+                                  {l.boxes > 0 && " + "}
+                                  {l.openBoxQty}
+                                </span>
+                              )}
+                              {l.boxes === 0 && l.openBoxQty === 0 && (
+                                <span className="text-gray-400">—</span>
+                              )}
+                            </div>
+                            <div className="font-semibold text-gray-800 flex-1 text-right">
+                              {formatNumber(l.totalQty)}
+                            </div>
+                          </div>
                         ))
                     ) : (
                       <div className="text-gray-400 italic">
