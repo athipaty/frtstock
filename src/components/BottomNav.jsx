@@ -62,7 +62,7 @@ export default function BottomNav() {
               More
             </div>
 
-            <div className="flex justify-around pb-2">
+            <div className="grid grid-cols-3 gap-1 pb-2">
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/upload")}
@@ -70,6 +70,7 @@ export default function BottomNav() {
                 <FiFileText className="text-2xl text-gray-600" />
                 <span className="text-[11px] text-gray-500">Master Data</span>
               </button>
+
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/upload-stocktake")}
@@ -77,7 +78,7 @@ export default function BottomNav() {
                 <FiUpload className="text-2xl text-gray-600" />
                 <span className="text-[11px] text-gray-500">Stock Take</span>
               </button>
-              {/* ✅ Matched icon with badge */}
+
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50 relative"
                 onClick={() => navigate("/matched")}
@@ -93,13 +94,12 @@ export default function BottomNav() {
                 <span className="text-[11px] text-gray-500">Matched</span>
               </button>
 
-              {/* ✅ Uncount icon with badge */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/uncounted")}
               >
                 <div className="relative">
-                  <FiAlertCircle className="text-2xl text-gray-600" />
+                  <FiAlertCircle className="text-2xl text-orange-500" />
                   {uncountedCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
                       {uncountedCount}
