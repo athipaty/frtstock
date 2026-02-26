@@ -20,6 +20,7 @@ export default function BottomNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [matchedCount, setMatchedCount] = useState(0); // ✅ add this
   const [varianceCount, setVarianceCount] = useState(0); // ✅ add this
+  const [uncountedCount, setUncountedCount] = useState(0);
 
   useEffect(() => {
     setMoreOpen(false);
@@ -29,12 +30,14 @@ export default function BottomNav() {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [matchedRes, varianceRes] = await Promise.all([
+        const [matchedRes, varianceRes, uncountedRes] = await Promise.all([
           axios.get(`${API}/count/matched`),
           axios.get(`${API}/count/variance`),
+          axios.get(`${API}/count/uncounted`), // ✅ add this
         ]);
         setMatchedCount(matchedRes.data.length);
-        setVarianceCount(varianceRes.data.length); // ✅ add this
+        setVarianceCount(varianceRes.data.length);
+        setUncountedCount(uncountedRes.data.length); // ✅ add this
       } catch {
         setMatchedCount(0);
         setVarianceCount(0);
@@ -89,12 +92,20 @@ export default function BottomNav() {
                 </div>
                 <span className="text-[11px] text-gray-500">Matched</span>
               </button>
-              // in the icon grid
+
+              {/* ✅ Uncount icon with badge */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/uncounted")}
               >
-                <FiAlertCircle className="text-2xl text-orange-500" />
+                <div className="relative">
+                  <FiAlertCircle className="text-2xl text-orange-500" />
+                  {uncountedCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
+                      {uncountedCount}
+                    </span>
+                  )}
+                </div>
                 <span className="text-[11px] text-gray-500">Uncounted</span>
               </button>
             </div>
