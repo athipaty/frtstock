@@ -100,25 +100,17 @@ export default function BottomNav() {
             </div>
 
             <div className="grid grid-cols-3 gap-1 pb-2">
-              {/* ── Upload (collapsible) ── */}
-              <button
-                className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition ${uploadOpen ? "bg-blue-50 text-gray-600" : "hover:bg-gray-50 text-gray-600"}`}
-                onClick={() => setUploadOpen((v) => !v)}
-              >
-                <FiUpload className="text-2xl" />
-                <span className="text-[11px] text-gray-500">Upload</span>
-              </button>
 
-              {/* ── Matched ── */}
+              {/* ── Unrecognized ── */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
-                onClick={() => navigate("/matched")}
+                onClick={() => navigate("/unrecognized")}
               >
                 <div className="relative">
-                  <FiCheckCircle className="text-2xl text-gray-600" />
-                  <NavBadge count={matchedCount} />
+                  <FiXCircle className="text-2xl text-gray-600" />
+                  <NavBadge count={unrecognizedCount} />
                 </div>
-                <span className="text-[11px] text-gray-600">Matched</span>
+                <span className="text-[11px] text-gray-600">Unrecognized</span>
               </button>
 
               {/* ── Uncounted ── */}
@@ -133,16 +125,26 @@ export default function BottomNav() {
                 <span className="text-[11px] text-gray-600">Uncounted</span>
               </button>
 
-              {/* ── Unrecognized ── */}
+
+              {/* ── Matched ── */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
-                onClick={() => navigate("/unrecognized")}
+                onClick={() => navigate("/matched")}
               >
                 <div className="relative">
-                  <FiXCircle className="text-2xl text-gray-600" />
-                  <NavBadge count={unrecognizedCount} />
+                  <FiCheckCircle className="text-2xl text-gray-600" />
+                  <NavBadge count={matchedCount} />
                 </div>
-                <span className="text-[11px] text-gray-600">Unrecognized</span>
+                <span className="text-[11px] text-gray-600">Matched</span>
+              </button>
+
+              {/* ── Upload (collapsible) ── */}
+              <button
+                className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition ${uploadOpen ? "bg-blue-50 text-gray-600" : "hover:bg-gray-50 text-gray-600"}`}
+                onClick={() => setUploadOpen((v) => !v)}
+              >
+                <FiUpload className="text-2xl" />
+                <span className="text-[11px] text-gray-500">Upload</span>
               </button>
             </div>
 
