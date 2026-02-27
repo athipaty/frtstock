@@ -14,6 +14,7 @@ import {
   FiDatabase,
   FiPackage,
   FiTag, // ✅ add
+  FiTool,
 } from "react-icons/fi";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -100,7 +101,6 @@ export default function BottomNav() {
             </div>
 
             <div className="grid grid-cols-3 gap-1 pb-2">
-
               {/* ── Unrecognized ── */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
@@ -124,7 +124,6 @@ export default function BottomNav() {
                 </div>
                 <span className="text-[11px] text-gray-600">Uncounted</span>
               </button>
-
 
               {/* ── Matched ── */}
               <button
@@ -168,7 +167,6 @@ export default function BottomNav() {
                       System Stock
                     </span>
                   </button>
-
                   <button
                     className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl hover:bg-gray-50"
                     onClick={() => navigate("/upload/tags")}
@@ -195,6 +193,20 @@ export default function BottomNav() {
                     </span>
                   </button>
 
+                  <button
+                    className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl hover:bg-gray-50"
+                    onClick={() => navigate("/upload/production-parts")}
+                  >
+                    <div className="relative">
+                      <FiTool className="text-2xl text-blue-500" />
+                      <GreenCheck
+                        show={uploadStatus?.productionParts?.uploaded}
+                      />
+                    </div>
+                    <span className="text-[11px] text-gray-500 text-center">
+                      Production
+                    </span>
+                  </button>
                   <button
                     className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl hover:bg-gray-50"
                     onClick={() => navigate("/upload-stocktake")}
