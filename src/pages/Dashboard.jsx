@@ -75,20 +75,6 @@ export default function Dashboard() {
             <AnimatedNumber value={actual} /> / <AnimatedNumber value={system} />
           </div>
         </div>
-
-        {/* Progress bar */}
-        <div className="w-full">
-          <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-1000 ease-out"
-              style={{ width: `${pct}%`, backgroundColor: color }}
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-gray-400 mt-1">
-            <span>0</span>
-            <span>{formatNumber(system)}</span>
-          </div>
-        </div>
       </div>
     );
   };
@@ -96,7 +82,7 @@ export default function Dashboard() {
   const StatCard = ({ label, value, sub, color }) => (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1">
       <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">{label}</div>
-      <div className="text-2xl font-bold" style={{ color }}>{formatNumber(value)}</div>
+      <div className="text-1xl font-bold" style={{ color }}>{formatNumber(value)}</div>
       {sub && <div className="text-xs text-gray-400">{sub}</div>}
     </div>
   );
@@ -120,7 +106,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
-      <div className="max-w-md md:max-w-5xl mx-auto space-y-4 md:space-y-6 animate-fade-in">
+      <div className="max-w-md md:max-w-5xl mx-auto space-y-4 md:space-y-3 animate-fade-in">
 
         {/* ── Header ── */}
         <div className="flex items-start justify-between">
@@ -142,7 +128,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard
             label="Total Qty (System)"
-            value={dashboard.qty.system}
+            value={dashboard.qty.system} 
             sub="System records"
             color="#2563eb"
           />
