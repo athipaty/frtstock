@@ -46,6 +46,7 @@ export default function BottomNav() {
           uncountedRes,
           unrecognizedRes,
           statusRes,
+          productionRes,
         ] = await Promise.all([
           axios.get(`${API}/count/matched`),
           axios.get(`${API}/count/variance`),
@@ -65,6 +66,7 @@ export default function BottomNav() {
         setVarianceCount(0);
         setUncountedCount(0);
         setUnrecognizedCount(0);
+        setProductionCountedCount(0); // ✅
       }
     };
     fetchCounts();
