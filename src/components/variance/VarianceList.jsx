@@ -85,6 +85,64 @@ export default function VarianceList({
                       </div>
                     )}
                   </div>
+
+                  {/* ✅ PREVIOUS DIFF */}
+                  {(v.diffN1 != null ||
+                    v.diffN2 != null ||
+                    v.price != null) && (
+                    <div className="pt-1 border-t space-y-1 text-xs text-gray-500">
+                      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+                        Previous Differences
+                      </div>
+
+                      {v.price > 0 && (
+                        <div className="flex justify-between">
+                          <span>Unit Price</span>
+                          <span className="font-medium text-gray-700">
+                            {formatNumber(v.price ?? 0)}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between">
+                        <span>N-1 Diff</span>
+                        <span
+                          className={`font-medium ${
+                            (v.diffN1 ?? 0) < 0
+                              ? "text-red-500"
+                              : (v.diffN1 ?? 0) > 0
+                                ? "text-green-500"
+                                : "text-gray-400"
+                          }`}
+                        >
+                          {v.diffN1 == null
+                            ? "—"
+                            : v.diffN1 > 0
+                              ? `+${formatNumber(v.diffN1)}`
+                              : formatNumber(v.diffN1)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between">
+                        <span>N-2 Diff</span>
+                        <span
+                          className={`font-medium ${
+                            (v.diffN2 ?? 0) < 0
+                              ? "text-red-500"
+                              : (v.diffN2 ?? 0) > 0
+                                ? "text-green-500"
+                                : "text-gray-400"
+                          }`}
+                        >
+                          {v.diffN2 == null
+                            ? "—"
+                            : v.diffN2 > 0
+                              ? `+${formatNumber(v.diffN2)}`
+                              : formatNumber(v.diffN2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

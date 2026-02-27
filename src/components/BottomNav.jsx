@@ -16,6 +16,7 @@ import {
   FiTag, // ✅ add
   FiTool,
   FiCpu,
+  FiClock,
 } from "react-icons/fi";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -225,6 +226,20 @@ export default function BottomNav() {
                       Production
                     </span>
                   </button>
+
+                  <button
+                    className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl hover:bg-gray-50"
+                    onClick={() => navigate("/upload/previous-diff")}
+                  >
+                    <div className="relative">
+                      <FiClock className="text-2xl text-indigo-500" />
+                      <GreenCheck show={uploadStatus?.previousDiff?.uploaded} />
+                    </div>
+                    <span className="text-[11px] text-gray-500 text-center">
+                      Prev Diff
+                    </span>
+                  </button>
+                  
                   <button
                     className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl hover:bg-gray-50"
                     onClick={() => navigate("/upload-stocktake")}

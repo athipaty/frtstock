@@ -14,6 +14,7 @@ import UploadTagList from "./pages/UploadTagList";
 import UploadLocationList from "./pages/UploadLocationList";
 import UploadProductionParts from "./pages/UploadProductionParts";
 import ProductionCounted from "./pages/ProductionCounted";
+import UploadPreviousDiff from "./pages/UploadPreviousDiff";
 
 export default function App() {
   return (
@@ -35,6 +36,10 @@ export default function App() {
           <Route
             path="/upload/production-parts"
             element={<UploadProductionParts />}
+          />
+          <Route
+            path="/upload/previous-diff"
+            element={<UploadPreviousDiff />}
           />
         </Routes>
       </div>
