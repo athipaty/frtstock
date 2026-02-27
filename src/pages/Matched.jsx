@@ -16,7 +16,6 @@ export default function Matched() {
 
   const loadMatched = async () => {
     const res = await axios.get(`${API}/count/matched`);
-    console.log("matched response:", res.data); // ✅ check this
 
     setMatched(res.data); // no need to filter, backend already returns matched only
     setLoading(false);

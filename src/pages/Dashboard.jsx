@@ -27,27 +27,26 @@ export default function Dashboard() {
     total ? Math.round((actual / total) * 100) : 0;
 
   const AnimatedNumber = ({ value, duration = 500 }) => {
-  const [display, setDisplay] = useState(0);
+    const [display, setDisplay] = useState(0);
 
-  useEffect(() => {
-    let start = 0;
-    const step = Math.max(1, Math.floor(value / (duration / 16)));
+    useEffect(() => {
+      let start = 0;
+      const step = Math.max(1, Math.floor(value / (duration / 16)));
 
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= value) {
-        start = value;
-        clearInterval(timer);
-      }
-      setDisplay(start);
-    }, 16);
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= value) {
+          start = value;
+          clearInterval(timer);
+        }
+        setDisplay(start);
+      }, 16);
 
-    return () => clearInterval(timer);
-  }, [value, duration]);
+      return () => clearInterval(timer);
+    }, [value, duration]);
 
-  return <>{formatNumber(display)}</>;
-};
-
+    return <>{formatNumber(display)}</>;
+  };
 
   /* ---------- Circle UI (presentation only) ---------- */
   const CircleProgress = ({
@@ -99,9 +98,9 @@ export default function Dashboard() {
         <div className="flex flex-col">
           <div className="text-l text-gray-600 text-right">{label}</div>
           <div className="text-xs font-medium text-gray-800 text-right">
-  <AnimatedNumber value={actual} /> / <AnimatedNumber value={system} />
-</div>
-
+            <AnimatedNumber value={actual} /> /{" "}
+            <AnimatedNumber value={system} />
+          </div>
         </div>
       </div>
     );
@@ -110,9 +109,10 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
       {dashboard && (
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2
-                animate-fade-in">
-
+        <div
+          className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2
+                animate-fade-in"
+        >
           {/* Header */}
           <div>
             <h2 className="text-base font-semibold text-gray-800">
@@ -130,7 +130,7 @@ export default function Dashboard() {
             system={dashboard.qty.system}
             color="#2563eb"
             size="lg"
-            />
+          />
 
           {/* Part No */}
           <CircleProgress
@@ -139,7 +139,7 @@ export default function Dashboard() {
             system={dashboard.partNo.system}
             size="lg"
             color="#16a34a"
-            />
+          />
 
           {/* Location */}
           <CircleProgress

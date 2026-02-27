@@ -15,6 +15,7 @@ import {
   FiPackage,
   FiTag, // ✅ add
   FiTool,
+  FiCpu,
 } from "react-icons/fi";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -29,6 +30,7 @@ export default function BottomNav() {
   const [uncountedCount, setUncountedCount] = useState(0);
   const [unrecognizedCount, setUnrecognizedCount] = useState(0);
   const [uploadStatus, setUploadStatus] = useState(null);
+  const [productionCountedCount, setProductionCountedCount] = useState(0);
 
   useEffect(() => {
     setMoreOpen(false);
@@ -50,12 +52,14 @@ export default function BottomNav() {
           axios.get(`${API}/count/uncounted`),
           axios.get(`${API}/count/unrecognized`),
           axios.get(`${API}/upload/status`), // ✅ add this
+          axios.get(`${API}/count/production-counted`), // ✅
         ]);
         setMatchedCount(matchedRes.data.length);
         setVarianceCount(varianceRes.data.length);
         setUncountedCount(uncountedRes.data.length);
         setUnrecognizedCount(unrecognizedRes.data.length);
         setUploadStatus(statusRes.data); // ✅ add this
+        setProductionCountedCount(productionRes.data.length); // ✅
       } catch {
         setMatchedCount(0);
         setVarianceCount(0);
@@ -135,6 +139,18 @@ export default function BottomNav() {
                   <NavBadge count={matchedCount} />
                 </div>
                 <span className="text-[11px] text-gray-600">Matched</span>
+              </button>
+
+              {/* Production counted */}
+              <button
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
+                onClick={() => navigate("/production-counted")}
+              >
+                <div className="relative">
+                  <FiCpu className="text-2xl text-gray-600" />
+                  <NavBadge count={productionCountedCount} />
+                </div>
+                <span className="text-[11px] text-gray-600">Production</span>
               </button>
 
               {/* ── Upload (collapsible) ── */}
