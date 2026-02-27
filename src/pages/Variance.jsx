@@ -107,19 +107,16 @@ export default function Variance() {
         {/* ── Stat cards (desktop) ── */}
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-            <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Total Parts</div>
+            <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Total</div>
             <div className="text-2xl font-bold text-gray-800 mt-1">{formatNumber(variances.length)}</div>
-            <div className="text-xs text-gray-400 mt-0.5">with differences</div>
           </div>
           <div className="bg-white rounded-2xl border border-red-50 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Short</div>
             <div className="text-2xl font-bold text-red-500 mt-1">{formatNumber(totalShort)}</div>
-            <div className="text-xs text-gray-400 mt-0.5">actual &lt; system</div>
           </div>
           <div className="bg-white rounded-2xl border border-green-50 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Over</div>
             <div className="text-2xl font-bold text-green-500 mt-1">{formatNumber(totalOver)}</div>
-            <div className="text-xs text-gray-400 mt-0.5">actual &gt; system</div>
           </div>
         </div>
 
