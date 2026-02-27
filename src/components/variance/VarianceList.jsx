@@ -95,17 +95,8 @@ export default function VarianceList({
                         Previous Differences
                       </div>
 
-                      {v.price > 0 && (
-                        <div className="flex justify-between">
-                          <span>Unit Price</span>
-                          <span className="font-medium text-gray-700">
-                            {formatNumber(v.price ?? 0)}
-                          </span>
-                        </div>
-                      )}
-
                       <div className="flex justify-between">
-                        <span>N-1 Diff</span>
+                        <span>Diff Count N-1</span>
                         <span
                           className={`font-medium ${
                             (v.diffN1 ?? 0) < 0
@@ -124,7 +115,7 @@ export default function VarianceList({
                       </div>
 
                       <div className="flex justify-between">
-                        <span>N-2 Diff</span>
+                        <span>Diff Count N-2</span>
                         <span
                           className={`font-medium ${
                             (v.diffN2 ?? 0) < 0
