@@ -1,9 +1,21 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import EditCountModal from "../components/variance/EditCountModal";
 
 const API = "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
+
+// ✅ debounce helper
+const useDebounce = (fn, delay) => {
+  const timer = useRef(null);
+  return useCallback(
+    (...args) => {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => fn(...args), delay);
+    },
+    [fn, delay],
+  );
+};
 
 export default function Count() {
   const [form, setForm] = useState({
@@ -185,7 +197,7 @@ export default function Count() {
     }
   };
 
-  const searchLocation = async (value) => {
+  const searchLocation = useCallback(async (value) => {
     setLocationHighlight(-1);
     if (!value) return setLocationSuggestions([]);
     try {
@@ -194,9 +206,9 @@ export default function Count() {
     } catch {
       setLocationSuggestions([]);
     }
-  };
+  }, []);
 
-  const searchPartNo = async (value) => {
+  const searchPartNo = useCallback(async (value) => {
     setPartHighlight(-1);
     if (!value) return setPartSuggestions([]);
     try {
@@ -205,7 +217,10 @@ export default function Count() {
     } catch {
       setPartSuggestions([]);
     }
-  };
+  }, []);
+
+  const debouncedSearchPartNo = useDebounce(searchPartNo, 300);
+  const debouncedSearchLocation = useDebounce(searchLocation, 300);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -287,20 +302,20 @@ export default function Count() {
   );
 
   const deleteRecord = async () => {
-  try {
-    await axios.delete(`${API}/count/${editing._id}`);
-    setEditOpen(false);
-    setEditing(null);
-    loadAllCounts();
-    setRecentCounts((prev) => prev.filter((r) => r._id !== editing._id));
-  } catch (err) {
-    setEditMsg(err.response?.data?.error || "Failed to delete.");
-  }
-};
+    try {
+      await axios.delete(`${API}/count/${editing._id}`);
+      setEditOpen(false);
+      setEditing(null);
+      loadAllCounts();
+      setRecentCounts((prev) => prev.filter((r) => r._id !== editing._id));
+    } catch (err) {
+      setEditMsg(err.response?.data?.error || "Failed to delete.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
-      <div className="max-w-md md:max-w-7xl mx-auto anoimate-fade-in">
+      <div className="max-w-md md:max-w-7xl mx-auto animate-fade-in">
         {/* ── Header ── */}
         <div className="mb-4 md:mb-6">
           <h1 className="text-lg md:text-2xl font-bold text-gray-800">
@@ -330,7 +345,7 @@ export default function Count() {
                     placeholder="IV25120002"
                     value={form.tagNo}
                     onChange={(e) =>
-                      setForm({ ...form, tagNo: e.target.value })
+                      setForm((prev) => ({ ...prev, tagNo: e.target.value }))
                     }
                     onKeyDown={handleKeyDown}
                   />
@@ -342,8 +357,9 @@ export default function Count() {
                     placeholder="A1-01"
                     value={form.location}
                     onChange={(e) => {
-                      setForm({ ...form, location: e.target.value });
-                      searchLocation(e.target.value);
+                      const val = e.target.value;
+                      setForm((prev) => ({ ...prev, location: val })); // ✅ use functional update
+                      debouncedSearchLocation(val);
                     }}
                     onKeyDown={handleLocationKeyDown}
                   />
@@ -375,8 +391,9 @@ export default function Count() {
                   placeholder="TG949046-4100"
                   value={form.partNo}
                   onChange={(e) => {
-                    setForm({ ...form, partNo: e.target.value });
-                    searchPartNo(e.target.value);
+                    const val = e.target.value;
+                    setForm((prev) => ({ ...prev, partNo: val })); // ✅ use functional update
+                    debouncedSearchPartNo(val);
                   }}
                   onKeyDown={handlePartKeyDown}
                 />
@@ -410,7 +427,10 @@ export default function Count() {
                     placeholder="300"
                     value={form.qtyPerBox}
                     onChange={(e) =>
-                      setForm({ ...form, qtyPerBox: e.target.value })
+                      setForm((prev) => ({
+                        ...prev,
+                        qtyPerBox: e.target.value,
+                      }))
                     }
                     onKeyDown={handleKeyDown}
                   />
@@ -422,7 +442,7 @@ export default function Count() {
                     placeholder="2"
                     value={form.boxes}
                     onChange={(e) =>
-                      setForm({ ...form, boxes: e.target.value })
+                      setForm((prev) => ({ ...prev, boxes: e.target.value }))
                     }
                     onKeyDown={handleKeyDown}
                   />
@@ -446,7 +466,10 @@ export default function Count() {
                         setForm({ ...form, openBoxQty: "0" });
                     }}
                     onChange={(e) =>
-                      setForm({ ...form, openBoxQty: e.target.value })
+                      setForm((prev) => ({
+                        ...prev,
+                        openBoxQty: e.target.value,
+                      }))
                     }
                     onKeyDown={handleKeyDown}
                   />
