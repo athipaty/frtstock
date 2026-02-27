@@ -8,6 +8,7 @@ export default function EditCountModal({
   onClose,
   onChange,
   onSave,
+  onDelete, // ✅ add this prop
 }) {
   if (!open) return null;
 
@@ -19,15 +20,20 @@ export default function EditCountModal({
   const openBoxNum = Number(data?.openBoxQty || 0);
   const totalQty = qtyPerBoxNum * boxesNum + openBoxNum;
 
+  const handleDelete = () => {
+    const confirm = window.confirm(
+      `⚠️ Delete count for ${data?.partNo} at ${data?.location}?\n\nThis cannot be undone.`,
+    );
+    if (confirm) onDelete?.();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-6">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
 
-      {/* Bottom sheet / card */}
       <div className="relative w-full sm:max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-2 animate-fade-in">
-          {/* Header (match Count page style) */}
+          {/* Header */}
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-base font-semibold text-gray-800">
@@ -37,27 +43,22 @@ export default function EditCountModal({
                 Update counts by box for this location.
               </p>
             </div>
-
             <button
               className="text-gray-500 text-lg leading-none px-2"
               onClick={onClose}
-              aria-label="Close"
             >
               ✕
             </button>
           </div>
 
-          {/* Loading */}
           {loading && (
             <div className="text-xs text-gray-500 text-center py-6">
               Loading…
             </div>
           )}
 
-          {/* Form */}
           {!loading && data && (
             <>
-              {/* Tag + Location side-by-side (same as Count layout) */}
               <div className="flex items-center space-x-4">
                 <div className="space-y-1 flex-1">
                   <label className={labelCls}>Tag No</label>
@@ -67,7 +68,6 @@ export default function EditCountModal({
                     onChange={(e) => onChange("tagNo", e.target.value)}
                   />
                 </div>
-
                 <div className="space-y-1 flex-1">
                   <label className={labelCls}>Location</label>
                   <input
@@ -78,7 +78,6 @@ export default function EditCountModal({
                 </div>
               </div>
 
-              {/* Part No full width */}
               <div className="space-y-1">
                 <label className={labelCls}>Part No</label>
                 <input
@@ -88,7 +87,6 @@ export default function EditCountModal({
                 />
               </div>
 
-              {/* Qty/Box + Boxes side-by-side */}
               <div className="flex items-center space-x-4">
                 <div className="space-y-1 flex-1">
                   <label className={labelCls}>Qty / Box</label>
@@ -99,7 +97,6 @@ export default function EditCountModal({
                     onChange={(e) => onChange("qtyPerBox", e.target.value)}
                   />
                 </div>
-
                 <div className="space-y-1 flex-1">
                   <label className={labelCls}>Boxes</label>
                   <input
@@ -111,7 +108,6 @@ export default function EditCountModal({
                 </div>
               </div>
 
-              {/* Open + Total side-by-side */}
               <div className="flex items-center space-x-4">
                 <div className="space-y-1 flex-1">
                   <label className={labelCls}>Open / Remaining Box</label>
@@ -120,36 +116,32 @@ export default function EditCountModal({
                     placeholder="0"
                     value={data.openBoxQty ?? "0"}
                     onFocus={() => {
-                      if (String(data.openBoxQty) === "0") {
+                      if (String(data.openBoxQty) === "0")
                         onChange("openBoxQty", "");
-                      }
                     }}
                     onBlur={() => {
-                      if (data.openBoxQty === "") {
-                        onChange("openBoxQty", "0");
-                      }
+                      if (data.openBoxQty === "") onChange("openBoxQty", "0");
                     }}
                     onChange={(e) => onChange("openBoxQty", e.target.value)}
                   />
                 </div>
-
                 <div className="space-y-1 flex-1">
                   <label className={labelCls}>Total Qty</label>
                   <input
                     className="w-full border px-2 py-1 rounded text-center bg-gray-50 font-semibold"
                     value={formatNumber(totalQty)}
+                    readOnly
                   />
                 </div>
               </div>
 
-              {/* Message (match Count page style) */}
               {message && (
                 <div
                   className={`text-center text-sm p-2 rounded ${
                     message.toLowerCase().includes("success")
                       ? "text-blue-700 bg-blue-50"
                       : message.includes("⚠️")
-                        ? "text-orange-700 bg-orange-50 border border-orange-200" // ✅ duplicate warning
+                        ? "text-orange-700 bg-orange-50 border border-orange-200"
                         : "text-red-700 bg-red-50"
                   }`}
                 >
@@ -157,14 +149,27 @@ export default function EditCountModal({
                 </div>
               )}
 
-              <div>
+              {/* Save button */}
+              <div className="pt-1">
                 <button
                   onClick={onSave}
-                  className="w-full bg-blue-600 text-white py-2 rounded text-lg mt-3"
+                  className="w-full bg-blue-600 text-white py-2 rounded-xl text-sm font-semibold"
                 >
                   Save
                 </button>
               </div>
+
+              {/* Delete button - bottom right, light gray */}
+              {onDelete && (
+                <div className="flex justify-end pt-4">
+                  <button
+                    onClick={handleDelete}
+                    className="text-xs text-gray-400 hover:text-red-400 transition"
+                  >
+                    Delete this record
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
