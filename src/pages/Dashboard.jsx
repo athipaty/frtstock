@@ -81,9 +81,9 @@ export default function Dashboard() {
 
   const StatCard = ({ label, value, sub, color }) => (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1">
-      <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">{label}</div>
-      <div className="text-1xl font-bold" style={{ color }}>{formatNumber(value)}</div>
-      {sub && <div className="text-xs text-gray-400">{sub}</div>}
+    <div className="text-[11px] hidden font-semibold text-gray-400 uppercase tracking-wide">{label}</div>
+    <div className="text-2xl font-semibold" style={{ color }}>{formatNumber(value)}</div>
+      {sub && <div className="text-xs text-gray-500">{sub}</div>}
     </div>
   );
 
@@ -127,25 +127,25 @@ export default function Dashboard() {
         {/* ── Stat summary row (desktop) ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard
-            label="Total Qty (System)"
+            label="Quantity System"
             value={dashboard.qty.system} 
             sub="System records"
             color="#2563eb"
           />
           <StatCard
-            label="Total Qty (Actual)"
+            label="Quantity Actual"
             value={dashboard.qty.actual}
             sub="Physically counted"
             color="#16a34a"
           />
           <StatCard
-            label="Qty Difference"
+            label="Quantity Difference"
             value={Math.abs(qtyDiff)}
             sub={qtyDiff <= 0 ? "Short vs system" : "Over vs system"}
             color={qtyDiff < 0 ? "#dc2626" : "#16a34a"}
           />
           <StatCard
-            label="Parts Progress"
+            label="Part No Difference"
             value={dashboard.partNo.actual}
             sub={`of ${formatNumber(dashboard.partNo.system)} parts`}
             color="#7c3aed"
