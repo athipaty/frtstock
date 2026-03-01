@@ -170,7 +170,7 @@ export default function Variance() {
           {/* Total */}
           <div className="bg-white rounded-2xl border border-red-50 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
-              Total Parts
+              Total
             </div>
             <div className="text-2xl font-bold text-gray-800 mt-1">
               {formatNumber(variances.length)}
