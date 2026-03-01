@@ -308,7 +308,7 @@ export default function Variance() {
                   : "bg-green-50 text-green-500 hover:bg-green-100"
               }`}
             >
-              {consistentFilter === "over3" ? "✕ Clear Filter" : "Show Items"}
+              {consistentFilter === "over3" ? "Clear Filter" : "Show Items"}
             </button>
           </div>
         </div>
