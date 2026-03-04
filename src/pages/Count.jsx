@@ -322,7 +322,7 @@ export default function Count() {
             Inventory Count
           </h1>
           <p className="text-xs md:text-sm text-gray-400 mt-0.5">
-            Scan or enter tag details to record physical stock.
+            Enter tag details to record physical stock.
           </p>
         </div>
 
