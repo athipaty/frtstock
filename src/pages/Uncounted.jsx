@@ -5,11 +5,23 @@ import UncountedList from "../components/uncounted/UncountedList";
 const API = "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
 
+// ✅ same as variance page
+const isEqual3Uncounted = (n1, n2, system) => {
+  if (n1 == null || n2 == null) return false;
+  // for uncounted, current diff = 0 - system = -system
+  const currentDiff = -system;
+  return (
+    Math.round(currentDiff) === Math.round(n1) &&
+    Math.round(currentDiff) === Math.round(n2)
+  );
+};
+
 export default function Uncounted() {
   const [uncounted, setUncounted] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openPart, setOpenPart] = useState(null);
   const [search, setSearch] = useState("");
+  const [showSame3, setShowSame3] = useState(false);
 
   useEffect(() => {
     loadUncounted();
@@ -22,11 +34,36 @@ export default function Uncounted() {
     setLoading(false);
   };
 
-  const filtered = uncounted.filter((v) =>
-    v.partNo.toLowerCase().includes(search.toLowerCase()),
+  const totalSystemQty = uncounted.reduce((sum, v) => sum + (v.system || 0), 0);
+
+  // ✅ parts where N-1 and N-2 equal current diff (-system)
+  const same3Parts = uncounted.filter((v) =>
+    isEqual3Uncounted(v.diffN1, v.diffN2, v.system),
   );
 
-  const totalSystemQty = uncounted.reduce((sum, v) => sum + (v.system || 0), 0);
+  const filtered = uncounted
+    .filter((v) => v.partNo.toLowerCase().includes(search.toLowerCase()))
+    .filter((v) => {
+      if (showSame3) return isEqual3Uncounted(v.diffN1, v.diffN2, v.system);
+      return true;
+    });
+
+  const DiffCell = ({ value }) => {
+    if (value == null) return <span className="text-gray-300">—</span>;
+    return (
+      <span
+        className={
+          value < 0
+            ? "text-red-400"
+            : value > 0
+              ? "text-green-400"
+              : "text-gray-300"
+        }
+      >
+        {value > 0 ? `+${formatNumber(value)}` : formatNumber(value)}
+      </span>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
@@ -60,6 +97,7 @@ export default function Uncounted() {
             </div>
             <div className="text-xs text-gray-400 mt-0.5">not yet counted</div>
           </div>
+
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
               System Qty
@@ -69,16 +107,38 @@ export default function Uncounted() {
             </div>
             <div className="text-xs text-gray-400 mt-0.5">units in system</div>
           </div>
-          <div className="hidden md:block bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+
+          {/* ✅ Same 3x card */}
+          <div
+            className={`bg-white rounded-2xl border shadow-sm p-4 transition ${
+              showSame3
+                ? "border-red-400 ring-2 ring-red-200"
+                : "border-red-100"
+            }`}
+          >
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
-              Search Results
+              Same Gap 3X
             </div>
-            <div className="text-2xl font-bold text-gray-800 mt-1">
-              {formatNumber(filtered.length)}
+            <div className="flex gap-2 mt-1 items-center">
+              <div className="text-2xl font-bold text-red-400">
+                {formatNumber(same3Parts.length)}
+              </div>
+              <div className="text-xs text-gray-400 mb-0.5">parts</div>
             </div>
-            <div className="text-xs text-gray-400 mt-0.5">
-              {search ? "matching search" : "all parts"}
-            </div>
+            <button
+              onClick={() => {
+                setShowSame3((v) => !v);
+                setSearch("");
+                setOpenPart(null);
+              }}
+              className={`mt-2 w-full text-xs py-1 rounded-lg font-medium transition ${
+                showSame3
+                  ? "bg-red-500 text-white"
+                  : "bg-red-50 text-red-500 hover:bg-red-100"
+              }`}
+            >
+              {showSame3 ? "✕ Clear Filter" : "Show Items"}
+            </button>
           </div>
         </div>
 
@@ -94,7 +154,7 @@ export default function Uncounted() {
           <div className="relative">
             <input
               className="w-full border border-gray-200 bg-gray-50 px-3 py-2 rounded-xl text-sm pl-8 focus:outline-none focus:ring-1 focus:ring-blue-300"
-              placeholder={`Search part no. (${uncounted.length} parts)`}
+              placeholder={`Search part no. (${filtered.length} parts)`}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -133,7 +193,10 @@ export default function Uncounted() {
                           System Qty
                         </th>
                         <th className="text-right px-4 py-3 font-semibold">
-                          Actual Qty
+                          Actual
+                        </th>
+                        <th className="text-right px-4 py-3 font-semibold">
+                          Diff
                         </th>
                         <th className="text-right px-4 py-3 font-semibold">
                           N-1
@@ -149,57 +212,40 @@ export default function Uncounted() {
                     <tbody>
                       {[...filtered]
                         .sort((a, b) => a.partNo.localeCompare(b.partNo))
-                        .map((v) => (
-                          <tr
-                            key={v.partNo}
-                            className="border-b border-gray-50 last:border-0 hover:bg-orange-50/30 transition"
-                          >
-                            <td className="px-4 py-3 font-medium text-gray-700">
-                              {v.partNo}
-                            </td>
-                            <td className="px-4 py-3 text-right text-gray-500">
-                              {formatNumber(v.system)}
-                            </td>
-                            <td className="px-4 py-3 text-right text-orange-400 font-medium">
-                              0
-                            </td>
-                            <td
-                              className={`px-4 py-3 text-right text-xs ${
-                                (v.diffN1 ?? 0) < 0
-                                  ? "text-red-400"
-                                  : (v.diffN1 ?? 0) > 0
-                                    ? "text-green-400"
-                                    : "text-gray-300"
-                              }`}
+                        .map((v) => {
+                          const diff = 0 - v.system;
+                          return (
+                            <tr
+                              key={v.partNo}
+                              className="border-b border-gray-50 last:border-0 hover:bg-orange-50/30 transition"
                             >
-                              {v.diffN1 == null
-                                ? "—"
-                                : v.diffN1 > 0
-                                  ? `+${formatNumber(v.diffN1)}`
-                                  : formatNumber(v.diffN1)}
-                            </td>
-                            <td
-                              className={`px-4 py-3 text-right text-xs ${
-                                (v.diffN2 ?? 0) < 0
-                                  ? "text-red-400"
-                                  : (v.diffN2 ?? 0) > 0
-                                    ? "text-green-400"
-                                    : "text-gray-300"
-                              }`}
-                            >
-                              {v.diffN2 == null
-                                ? "—"
-                                : v.diffN2 > 0
-                                  ? `+${formatNumber(v.diffN2)}`
-                                  : formatNumber(v.diffN2)}
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              <span className="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
-                                ⚠ Not counted
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
+                              <td className="px-4 py-3 font-medium text-gray-700">
+                                {v.partNo}
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-500">
+                                {formatNumber(v.system)}
+                              </td>
+                              <td className="px-4 py-3 text-right text-orange-400 font-medium">
+                                0
+                              </td>
+                              {/* ✅ Diff column */}
+                              <td className="px-4 py-3 text-right font-bold text-red-500 text-xs">
+                                {formatNumber(diff)}
+                              </td>
+                              <td className="px-4 py-3 text-right text-xs">
+                                <DiffCell value={v.diffN1} />
+                              </td>
+                              <td className="px-4 py-3 text-right text-xs">
+                                <DiffCell value={v.diffN2} />
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <span className="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
+                                  ⚠ Not counted
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 )}
