@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import * as XLSX from "xlsx";
 import UncountedList from "../components/uncounted/UncountedList";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -32,6 +33,38 @@ export default function Uncounted() {
     const res = await axios.get(`${API}/count/uncounted`);
     setUncounted(res.data);
     setLoading(false);
+  };
+
+  const downloadExcel = () => {
+    const rows = [...filtered]
+      .sort((a, b) => a.partNo.localeCompare(b.partNo))
+      .map((v) => ({
+        "Part No": v.partNo,
+        "System Qty": v.system,
+        "Actual Qty": 0,
+        Diff: -v.system,
+        "N-1": v.diffN1 ?? "",
+        "N-2": v.diffN2 ?? "",
+        Status: "Not Counted",
+      }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 20 }, // Part No
+      { wch: 12 }, // System Qty
+      { wch: 12 }, // Actual Qty
+      { wch: 10 }, // Diff
+      { wch: 10 }, // N-1
+      { wch: 10 }, // N-2
+      { wch: 14 }, // Status
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Uncounted");
+
+    const date = new Date().toISOString().slice(0, 10);
+    const filterLabel = showSame3 ? "-same3x" : "";
+    XLSX.writeFile(wb, `uncounted${filterLabel}-${date}.xlsx`);
   };
 
   const totalSystemQty = uncounted.reduce((sum, v) => sum + (v.system || 0), 0);
@@ -78,12 +111,38 @@ export default function Uncounted() {
               Parts in the system that have not been physically counted yet.
             </p>
           </div>
-          <button
-            onClick={loadUncounted}
-            className="text-xs text-blue-600 border border-blue-100 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 transition"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={downloadExcel}
+              disabled={filtered.length === 0}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                filtered.length === 0
+                  ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                  : "bg-green-50 text-green-600 border border-green-100 hover:bg-green-100"
+              }`}
+            >
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+                />
+              </svg>
+              Export
+            </button>
+            <button
+              onClick={loadUncounted}
+              className="text-xs text-blue-600 border border-blue-100 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 transition"
+            >
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* ── Stat cards ── */}

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
+import * as XLSX from "xlsx";
 import EditCountModal from "../components/variance/EditCountModal";
 
 const API = "https://center-kitchen-backend.onrender.com";
@@ -313,6 +314,37 @@ export default function Count() {
     }
   };
 
+  const downloadExcel = () => {
+    const rows = filteredAll.map((r) => ({
+      "Tag No": r.tagNo ?? "",
+      "Part No": r.partNo ?? "",
+      Location: r.location ?? "",
+      "Qty/Box": r.qtyPerBox ?? 0,
+      Boxes: r.boxes ?? 0,
+      "Open Qty": r.openBoxQty ?? 0,
+      "Total Qty": r.totalQty ?? 0,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+
+    // column widths
+    ws["!cols"] = [
+      { wch: 16 }, // Tag No
+      { wch: 20 }, // Part No
+      { wch: 14 }, // Location
+      { wch: 10 }, // Qty/Box
+      { wch: 8 }, // Boxes
+      { wch: 10 }, // Open Qty
+      { wch: 12 }, // Total Qty
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Stock Count");
+
+    const date = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `stock-count-${date}.xlsx`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-7xl mx-auto animate-fade-in">
@@ -577,26 +609,55 @@ export default function Count() {
                   </div>
                   <div className="text-xs text-gray-400">
                     {allCounts.length} records total
+                    {allSearch && ` · ${filteredAll.length} results`}
                   </div>
                 </div>
-                <div className="relative w-full sm:w-64">
-                  <input
-                    className="w-full border border-gray-200 bg-gray-50 pl-8 pr-8 py-1.5 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-300"
-                    placeholder="Search part, location, tag..."
-                    value={allSearch}
-                    onChange={(e) => setAllSearch(e.target.value)}
-                  />
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
-                    🔍
-                  </span>
-                  {allSearch && (
-                    <button
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
-                      onClick={() => setAllSearch("")}
+                <div className="flex items-center gap-2">
+                  {/* Search */}
+                  <div className="relative w-full sm:w-64">
+                    <input
+                      className="w-full border border-gray-200 bg-gray-50 pl-8 pr-8 py-1.5 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-300"
+                      placeholder="Search part, location, tag..."
+                      value={allSearch}
+                      onChange={(e) => setAllSearch(e.target.value)}
+                    />
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+                      🔍
+                    </span>
+                    {allSearch && (
+                      <button
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
+                        onClick={() => setAllSearch("")}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  {/* Download button */}
+                  <button
+                    onClick={downloadExcel}
+                    disabled={filteredAll.length === 0}
+                    className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                      filteredAll.length === 0
+                        ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                        : "bg-green-50 text-green-600 border border-green-100 hover:bg-green-100"
+                    }`}
+                  >
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
                     >
-                      ✕
-                    </button>
-                  )}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+                      />
+                    </svg>
+                    Export
+                  </button>
                 </div>
               </div>
 
