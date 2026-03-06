@@ -92,7 +92,7 @@ export default function SideNav() {
 
       {/* Logo */}
       <div className="px-4 py-5 border-b border-gray-100">
-        <div className="text-base font-bold text-gray-800">📦 Stock Check</div>
+        <div className="text-base font-bold text-gray-800">Stock Check</div>
         <div className="text-[11px] text-gray-400 mt-0.5">Inventory Management</div>
       </div>
 
