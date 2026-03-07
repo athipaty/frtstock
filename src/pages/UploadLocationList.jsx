@@ -10,6 +10,9 @@ export default function UploadLocationList() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [details, setDetails] = useState([]);
+  const [clearing, setClearing] = useState(false);
+  const [clearResult, setClearResult] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const fileInfo = useMemo(() => {
     if (!file) return null;
@@ -65,6 +68,21 @@ export default function UploadLocationList() {
     }
   };
 
+  const clearAll = async () => {
+    try {
+      setClearing(true);
+      setClearResult(null);
+      setError("");
+      setShowConfirm(false);
+      const res = await axios.delete(`${API}/upload/locations`);
+      setClearResult(res.data?.deleted ?? 0);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to clear data");
+    } finally {
+      setClearing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-2xl mx-auto space-y-4 animate-fade-in">
@@ -92,7 +110,7 @@ export default function UploadLocationList() {
             </div>
           </div>
         </div>
-        
+
         {/* Format guide */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -226,8 +244,93 @@ export default function UploadLocationList() {
             >
               Reset
             </button>
+
+            <button
+              onClick={() => {
+                setClearResult(null);
+                setShowConfirm(true);
+              }}
+              disabled={clearing || uploading}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${
+                clearing || uploading
+                  ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                  : "bg-red-50 text-red-500 border border-red-100 hover:bg-red-100"
+              }`}
+            >
+              {clearing ? (
+                <span className="flex items-center gap-1.5">
+                  <svg
+                    className="animate-spin h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
+                  </svg>
+                  Clearing...
+                </span>
+              ) : (
+                "Clear Data"
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Confirm clear card */}
+        {showConfirm && (
+          <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-4 space-y-3 animate-fade-in">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg">🗑️</span>
+              </div>
+              <div>
+                <div className="text-sm font-bold text-red-600">
+                  Clear All Location Data?
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  This will permanently delete{" "}
+                  <span className="font-semibold text-gray-700">
+                    all location records
+                  </span>{" "}
+                  from the system. This action cannot be undone.
+                </div>
+              </div>
+            </div>
+            <div className="bg-red-50 rounded-xl px-3 py-2 text-xs text-red-500 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>
+                Stock counting will not be able to validate locations until you
+                re-upload.
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={clearAll}
+                disabled={clearing}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition"
+              >
+                Yes, Delete All
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Success */}
         {result && (
@@ -243,6 +346,25 @@ export default function UploadLocationList() {
                     {result.inserted}
                   </span>{" "}
                   locations uploaded successfully
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {clearResult !== null && (
+          <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-4">
+            <div className="flex items-center gap-2">
+              <span className="text-orange-500 text-lg">🗑️</span>
+              <div>
+                <div className="text-sm font-semibold text-orange-700">
+                  Data cleared
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  <span className="font-medium text-gray-700">
+                    {clearResult}
+                  </span>{" "}
+                  locations removed from the system
                 </div>
               </div>
             </div>

@@ -10,6 +10,9 @@ export default function UploadTagList() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [details, setDetails] = useState([]);
+  const [clearing, setClearing] = useState(false);
+  const [clearResult, setClearResult] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const fileInfo = useMemo(() => {
     if (!file) return null;
@@ -62,6 +65,21 @@ export default function UploadTagList() {
       setDetails(Array.isArray(det) ? det : []);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const clearAll = async () => {
+    try {
+      setClearing(true);
+      setClearResult(null);
+      setError("");
+      setShowConfirm(false);
+      const res = await axios.delete(`${API}/upload/tags`);
+      setClearResult(res.data?.deleted ?? 0);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to clear data");
+    } finally {
+      setClearing(false);
     }
   };
 
@@ -187,6 +205,7 @@ export default function UploadTagList() {
           </div>
 
           {/* Buttons */}
+          {/* Buttons */}
           <div className="flex gap-2">
             <button
               onClick={upload}
@@ -231,8 +250,92 @@ export default function UploadTagList() {
             >
               Reset
             </button>
+            <button
+              onClick={() => {
+                setClearResult(null);
+                setShowConfirm(true);
+              }}
+              disabled={clearing || uploading}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${
+                clearing || uploading
+                  ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                  : "bg-red-50 text-red-500 border border-red-100 hover:bg-red-100"
+              }`}
+            >
+              {clearing ? (
+                <span className="flex items-center gap-1.5">
+                  <svg
+                    className="animate-spin h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
+                  </svg>
+                  Clearing...
+                </span>
+              ) : (
+                "Clear Data"
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Confirm clear card */}
+        {showConfirm && (
+          <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-4 space-y-3 animate-fade-in">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg">🗑️</span>
+              </div>
+              <div>
+                <div className="text-sm font-bold text-red-600">
+                  Clear All Tag Data?
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  This will permanently delete{" "}
+                  <span className="font-semibold text-gray-700">
+                    all tag records
+                  </span>{" "}
+                  from the system. This action cannot be undone.
+                </div>
+              </div>
+            </div>
+            <div className="bg-red-50 rounded-xl px-3 py-2 text-xs text-red-500 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>
+                Counting progress will no longer be tracked until you re-upload
+                the tag list.
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={clearAll}
+                disabled={clearing}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition"
+              >
+                Yes, Delete All
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* ── Success result ── */}
         {result && (
@@ -248,6 +351,26 @@ export default function UploadTagList() {
                     {result.inserted}
                   </span>{" "}
                   tags uploaded successfully
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Clear success */}
+        {clearResult !== null && (
+          <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-4">
+            <div className="flex items-center gap-2">
+              <span className="text-orange-500 text-lg">🗑️</span>
+              <div>
+                <div className="text-sm font-semibold text-orange-700">
+                  Data cleared
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  <span className="font-medium text-gray-700">
+                    {clearResult}
+                  </span>{" "}
+                  tags removed from the system
                 </div>
               </div>
             </div>

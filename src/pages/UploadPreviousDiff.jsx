@@ -10,6 +10,9 @@ export default function UploadPreviousDiff() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [details, setDetails] = useState([]);
+  const [clearing, setClearing] = useState(false);
+  const [clearResult, setClearResult] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const fileInfo = useMemo(() => {
     if (!file) return null;
@@ -17,15 +20,22 @@ export default function UploadPreviousDiff() {
   }, [file]);
 
   const resetAll = () => {
-    setFile(null); setResult(null); setError(""); setDetails([]);
+    setFile(null);
+    setResult(null);
+    setError("");
+    setDetails([]);
     if (inputRef.current) inputRef.current.value = "";
   };
 
   const onPickFile = (f) => {
-    setResult(null); setError(""); setDetails([]);
+    setResult(null);
+    setError("");
+    setDetails([]);
     if (!f) return setFile(null);
-    const isXlsx = f.name.toLowerCase().endsWith(".xlsx") ||
-      f.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    const isXlsx =
+      f.name.toLowerCase().endsWith(".xlsx") ||
+      f.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     if (!isXlsx) {
       setFile(null);
       setError("Please upload an .xlsx Excel file");
@@ -38,31 +48,52 @@ export default function UploadPreviousDiff() {
   const upload = async () => {
     if (!file) return setError("Please choose an Excel file first");
     try {
-      setUploading(true); setError(""); setDetails([]); setResult(null);
+      setUploading(true);
+      setError("");
+      setDetails([]);
+      setResult(null);
       const form = new FormData();
       form.append("file", file);
-      const res = await axios.post(`${API}/count/previous-diff`, form, {
+      const res = await axios.post(`${API}/upload/previous-diff`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResult({ inserted: res.data?.count ?? 0 });
     } catch (err) {
       const msg = err.response?.data?.error || "Upload failed";
       const det = err.response?.data?.details || [];
-      setError(msg); setDetails(Array.isArray(det) ? det : []);
+      setError(msg);
+      setDetails(Array.isArray(det) ? det : []);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const clearAll = async () => {
+    try {
+      setClearing(true);
+      setClearResult(null);
+      setError("");
+      setShowConfirm(false);
+      const res = await axios.delete(`${API}/upload/previous-diff`);
+      setClearResult(res.data?.deleted ?? 0);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to clear data");
+    } finally {
+      setClearing(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-2xl mx-auto space-y-4 animate-fade-in">
-
         {/* Header */}
         <div>
-          <h1 className="text-lg md:text-2xl font-bold text-gray-800">Upload Previous Difference</h1>
+          <h1 className="text-lg md:text-2xl font-bold text-gray-800">
+            Upload Previous Difference
+          </h1>
           <p className="text-xs md:text-sm text-gray-400 mt-0.5">
-            Upload previous stock count differences to compare against current results.
+            Upload previous stock count differences to compare against current
+            results.
           </p>
         </div>
 
@@ -72,14 +103,17 @@ export default function UploadPreviousDiff() {
           <div className="text-xs text-indigo-700 space-y-1">
             <div className="font-semibold">Used for trend tracking</div>
             <div className="text-indigo-500">
-              N-1 and N-2 columns will appear on Variance, Matched, and Uncounted pages to show whether gaps are improving or recurring.
+              N-1 and N-2 columns will appear on Variance, Matched, and
+              Uncounted pages to show whether gaps are improving or recurring.
             </div>
           </div>
         </div>
 
         {/* Format guide */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
-          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Required Format</div>
+          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Required Format
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -112,26 +146,13 @@ export default function UploadPreviousDiff() {
               </tbody>
             </table>
           </div>
-
-          {/* Column descriptions */}
-          <div className="grid grid-cols-2 gap-2 pt-1">
-            {[
-              { col: "partNo", desc: "Part number identifier" },
-              { col: "price", desc: "Unit price of the part" },
-              { col: "diffN1", desc: "Gap from previous count" },
-              { col: "diffN2", desc: "Gap from count before that" },
-            ].map((item) => (
-              <div key={item.col} className="flex items-start gap-2 text-xs">
-                <span className="font-mono font-semibold text-indigo-500 shrink-0">{item.col}</span>
-                <span className="text-gray-400">{item.desc}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Upload card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
-          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Select File</div>
+          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Select File
+          </div>
 
           <div
             className={`border-2 border-dashed rounded-xl p-6 text-center transition cursor-pointer ${
@@ -141,7 +162,10 @@ export default function UploadPreviousDiff() {
             }`}
             onClick={() => inputRef.current?.click()}
             onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => { e.preventDefault(); onPickFile(e.dataTransfer.files?.[0]); }}
+            onDrop={(e) => {
+              e.preventDefault();
+              onPickFile(e.dataTransfer.files?.[0]);
+            }}
           >
             <input
               ref={inputRef}
@@ -153,12 +177,19 @@ export default function UploadPreviousDiff() {
             {file ? (
               <div className="space-y-1">
                 <div className="text-2xl">📄</div>
-                <div className="text-sm font-semibold text-indigo-600">{fileInfo.name}</div>
-                <div className="text-xs text-gray-400">{fileInfo.sizeMB} MB</div>
+                <div className="text-sm font-semibold text-indigo-600">
+                  {fileInfo.name}
+                </div>
+                <div className="text-xs text-gray-400">
+                  {fileInfo.sizeMB} MB
+                </div>
                 <button
                   type="button"
                   className="mt-2 text-xs text-red-400 hover:text-red-600 transition"
-                  onClick={(e) => { e.stopPropagation(); resetAll(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resetAll();
+                  }}
                 >
                   Remove file
                 </button>
@@ -166,7 +197,9 @@ export default function UploadPreviousDiff() {
             ) : (
               <div className="space-y-1">
                 <div className="text-2xl">📂</div>
-                <div className="text-sm font-medium text-gray-500">Click or drag and drop</div>
+                <div className="text-sm font-medium text-gray-500">
+                  Click or drag and drop
+                </div>
                 <div className="text-xs text-gray-400">.xlsx files only</div>
               </div>
             )}
@@ -184,13 +217,30 @@ export default function UploadPreviousDiff() {
             >
               {uploading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  <svg
+                    className="animate-spin h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
                   </svg>
                   Uploading...
                 </span>
-              ) : "Upload"}
+              ) : (
+                "Upload"
+              )}
             </button>
             <button
               onClick={resetAll}
@@ -199,8 +249,92 @@ export default function UploadPreviousDiff() {
             >
               Reset
             </button>
+            <button
+              onClick={() => {
+                setClearResult(null);
+                setShowConfirm(true);
+              }}
+              disabled={clearing || uploading}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${
+                clearing || uploading
+                  ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                  : "bg-red-50 text-red-500 border border-red-100 hover:bg-red-100"
+              }`}
+            >
+              {clearing ? (
+                <span className="flex items-center gap-1.5">
+                  <svg
+                    className="animate-spin h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
+                  </svg>
+                  Clearing...
+                </span>
+              ) : (
+                "Clear Data"
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Confirm clear card */}
+        {showConfirm && (
+          <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-4 space-y-3 animate-fade-in">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg">🗑️</span>
+              </div>
+              <div>
+                <div className="text-sm font-bold text-red-600">
+                  Clear All Previous Diff Data?
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  This will permanently delete{" "}
+                  <span className="font-semibold text-gray-700">
+                    all N-1 and N-2 records
+                  </span>{" "}
+                  from the system. This action cannot be undone.
+                </div>
+              </div>
+            </div>
+            <div className="bg-red-50 rounded-xl px-3 py-2 text-xs text-red-500 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>
+                Variance, Matched, and Uncounted pages will no longer show trend
+                history until you re-upload.
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={clearAll}
+                disabled={clearing}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition"
+              >
+                Yes, Delete All
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Success */}
         {result && (
@@ -208,9 +342,34 @@ export default function UploadPreviousDiff() {
             <div className="flex items-center gap-2">
               <span className="text-green-500 text-lg">✅</span>
               <div>
-                <div className="text-sm font-semibold text-green-700">Upload completed</div>
+                <div className="text-sm font-semibold text-green-700">
+                  Upload completed
+                </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  <span className="font-medium text-gray-700">{result.inserted}</span> records uploaded successfully
+                  <span className="font-medium text-gray-700">
+                    {result.inserted}
+                  </span>{" "}
+                  records uploaded successfully
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Clear success */}
+        {clearResult !== null && (
+          <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-4">
+            <div className="flex items-center gap-2">
+              <span className="text-orange-500 text-lg">🗑️</span>
+              <div>
+                <div className="text-sm font-semibold text-orange-700">
+                  Data cleared
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  <span className="font-medium text-gray-700">
+                    {clearResult}
+                  </span>{" "}
+                  previous diff records removed from the system
                 </div>
               </div>
             </div>
@@ -227,16 +386,19 @@ export default function UploadPreviousDiff() {
             {details.length > 0 && (
               <div className="bg-red-50 rounded-xl p-3 max-h-40 overflow-auto space-y-1">
                 {details.slice(0, 50).map((d, i) => (
-                  <div key={i} className="text-xs text-red-600">• {d}</div>
+                  <div key={i} className="text-xs text-red-600">
+                    • {d}
+                  </div>
                 ))}
                 {details.length > 50 && (
-                  <div className="text-xs text-red-400 pt-1">Showing first 50 errors...</div>
+                  <div className="text-xs text-red-400 pt-1">
+                    Showing first 50 errors...
+                  </div>
                 )}
               </div>
             )}
           </div>
         )}
-
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import EditCountModal from "../components/variance/EditCountModal";
+import SwipeRow from "../components/variance/SwipeRow";
 
 const API = "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
@@ -385,48 +386,40 @@ export default function ProductionCounted() {
                                       a.location.localeCompare(b.location),
                                     )
                                     .map((l, i) => (
-                                      <div
+                                      <SwipeRow
                                         key={i}
-                                        className="flex justify-between text-xs text-gray-500 border-b last:border-b-0 pb-1"
+                                        onEdit={() =>
+                                          openEditLocation(v.partNo, l.location)
+                                        }
                                       >
-                                        <div className="font-medium text-gray-700 flex-1">
-                                          {l.location}
-                                        </div>
-                                        <div className="flex-1 text-[11px]">
-                                          {l.boxes > 0 && (
-                                            <span>
-                                              {l.qtyPerBox} × {l.boxes}
-                                            </span>
-                                          )}
-                                          {l.openBoxQty > 0 && (
-                                            <span>
-                                              {l.boxes > 0 && " + "}
-                                              {l.openBoxQty}
-                                            </span>
-                                          )}
-                                          {l.boxes === 0 &&
-                                            l.openBoxQty === 0 && (
-                                              <span className="text-gray-400">
-                                                —
+                                        <div className="flex justify-between text-xs text-gray-500 border-b last:border-b-0 pb-1">
+                                          <div className="font-medium text-gray-700 flex-1">
+                                            {l.location}
+                                          </div>
+                                          <div className="flex-1 text-[11px]">
+                                            {l.boxes > 0 && (
+                                              <span>
+                                                {l.qtyPerBox} × {l.boxes}
                                               </span>
                                             )}
+                                            {l.openBoxQty > 0 && (
+                                              <span>
+                                                {l.boxes > 0 && " + "}
+                                                {l.openBoxQty}
+                                              </span>
+                                            )}
+                                            {l.boxes === 0 &&
+                                              l.openBoxQty === 0 && (
+                                                <span className="text-gray-400">
+                                                  —
+                                                </span>
+                                              )}
+                                          </div>
+                                          <div className="font-semibold text-gray-800 flex-1 text-right">
+                                            {formatNumber(l.totalQty)}
+                                          </div>
                                         </div>
-                                        <div className="font-semibold text-gray-800 flex-1 text-right">
-                                          {formatNumber(l.totalQty)}
-                                        </div>
-                                        <button
-                                          className="ml-2 text-xs text-blue-500 hover:underline"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            openEditLocation(
-                                              v.partNo,
-                                              l.location,
-                                            );
-                                          }}
-                                        >
-                                          Edit
-                                        </button>
-                                      </div>
+                                      </SwipeRow>
                                     ))
                                 ) : (
                                   <div className="text-gray-400 italic">
