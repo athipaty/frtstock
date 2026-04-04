@@ -131,7 +131,6 @@ export default function SideNav() {
 
   return (
     <>
-      // ✅ Final version — only visible when sidebar is closed
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
