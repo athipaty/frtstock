@@ -94,15 +94,6 @@ export default function SideNav() {
 
   return (
     <>
-      {/* ── Hamburger toggle button (always visible) ── */}
-      <button
-        onClick={() => setIsOpen((v) => !v)}
-        className={`fixed top-4 z-50 flex items-center justify-center w-9 h-9 rounded-xl shadow-sm border border-gray-100 bg-white text-gray-600 hover:bg-gray-50 transition-all duration-300 ${
-          isOpen ? "left-[calc(240px+12px)]" : "left-4"
-        }`}
-      >
-        {isOpen ? <FiX className="text-base" /> : <FiMenu className="text-base" />}
-      </button>
 
       {/* ── Overlay backdrop (mobile) ── */}
       {isOpen && (
