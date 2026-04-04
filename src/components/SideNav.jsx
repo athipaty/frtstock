@@ -1,24 +1,29 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   FiHome, FiEdit, FiBarChart2, FiCheckCircle,
   FiAlertCircle, FiXCircle, FiDatabase, FiPackage,
   FiTag, FiGrid, FiTool, FiClock, FiCpu, FiChevronDown,
-  FiChevronRight, FiUpload,
+  FiChevronRight, FiUpload, FiX, FiMenu,
 } from "react-icons/fi";
 
 const API = "https://center-kitchen-backend.onrender.com";
 
 export default function SideNav() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [counts, setCounts] = useState({
     matched: 0, variance: 0, uncounted: 0,
     unrecognized: 0, production: 0,
   });
   const [uploadStatus, setUploadStatus] = useState(null);
+
+  // close sidebar on route change (mobile)
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -88,60 +93,92 @@ export default function SideNav() {
   );
 
   return (
-    <div className="fixed top-0 left-0 h-screen w-60 bg-white border-r border-gray-100 shadow-sm flex flex-col z-40">
+    <>
+      {/* ── Hamburger toggle button (always visible) ── */}
+      <button
+        onClick={() => setIsOpen((v) => !v)}
+        className={`fixed top-4 z-50 flex items-center justify-center w-9 h-9 rounded-xl shadow-sm border border-gray-100 bg-white text-gray-600 hover:bg-gray-50 transition-all duration-300 ${
+          isOpen ? "left-[calc(240px+12px)]" : "left-4"
+        }`}
+      >
+        {isOpen ? <FiX className="text-base" /> : <FiMenu className="text-base" />}
+      </button>
 
-      {/* Logo */}
-      <div className="px-4 py-5 border-b border-gray-100">
-        <div className="text-base font-bold text-gray-800">Stock Check</div>
-        <div className="text-[11px] text-gray-400 mt-0.5">Inventory Management</div>
-      </div>
+      {/* ── Overlay backdrop (mobile) ── */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px] md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
-      {/* Nav */}
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
-
-        {/* Main */}
-        <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide px-3 py-1">Main</div>
-        <NavItem to="/" icon={FiHome} label="Dashboard" />
-        <NavItem to="/count" icon={FiEdit} label="Count" />
-        <NavItem to="/variance" icon={FiBarChart2} label="Gap" badge={counts.variance} />
-
-        {/* Results */}
-        <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide px-3 py-1 mt-3">Results</div>
-        <NavItem to="/matched" icon={FiCheckCircle} label="Matched" badge={counts.matched} color="text-green-500" />
-        <NavItem to="/uncounted" icon={FiAlertCircle} label="Uncounted" badge={counts.uncounted} color="text-orange-500" />
-        <NavItem to="/unrecognized" icon={FiXCircle} label="Unrecognized" badge={counts.unrecognized} color="text-red-500" />
-        <NavItem to="/production-counted" icon={FiCpu} label="Production" badge={counts.production} color="text-blue-500" />
-
-        {/* Upload */}
-        <div className="mt-3">
+      {/* ── Sidebar panel ── */}
+      <div
+        className={`fixed top-0 left-0 h-screen w-60 bg-white border-r border-gray-100 shadow-sm flex flex-col z-40 transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Logo */}
+        <div className="px-4 py-5 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <div className="text-base font-bold text-gray-800">Stock Check</div>
+            <div className="text-[11px] text-gray-400 mt-0.5">Inventory Management</div>
+          </div>
           <button
-            onClick={() => setUploadOpen((v) => !v)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition"
+            onClick={() => setIsOpen(false)}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 transition"
           >
-            <div className="flex items-center gap-2.5">
-              <FiUpload className="text-base text-gray-500" />
-              <span className="font-medium">Upload</span>
-            </div>
-            {uploadOpen ? <FiChevronDown className="text-xs" /> : <FiChevronRight className="text-xs" />}
+            <FiX className="text-sm" />
           </button>
+        </div>
 
-          {uploadOpen && (
-            <div className="ml-3 mt-1 space-y-0.5 border-l border-gray-100 pl-3">
-              <UploadItem to="/upload/system-stock" icon={FiDatabase} label="System Stock" uploaded={uploadStatus?.systemStock?.uploaded} />
-              <UploadItem to="/upload/tags" icon={FiTag} label="Tag List" uploaded={uploadStatus?.tagList?.uploaded} />
-              <UploadItem to="/upload/locations" icon={FiGrid} label="Location List" uploaded={uploadStatus?.locationList?.uploaded} />
-              <UploadItem to="/upload/production-parts" icon={FiTool} label="Production Parts" uploaded={uploadStatus?.productionParts?.uploaded} />
-              <UploadItem to="/upload/previous-diff" icon={FiClock} label="Previous Diff" uploaded={uploadStatus?.previousDiff?.uploaded} />
-              <UploadItem to="/upload-stocktake" icon={FiPackage} label="Upload Count" uploaded={counts.matched + counts.variance + counts.uncounted > 0} />
-            </div>
-          )}
+        {/* Nav */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
+
+          {/* Main */}
+          <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide px-3 py-1">Main</div>
+          <NavItem to="/" icon={FiHome} label="Dashboard" />
+          <NavItem to="/count" icon={FiEdit} label="Count" />
+          <NavItem to="/variance" icon={FiBarChart2} label="Gap" badge={counts.variance} />
+
+          {/* Results */}
+          <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide px-3 py-1 mt-3">Results</div>
+          <NavItem to="/matched" icon={FiCheckCircle} label="Matched" badge={counts.matched} color="text-green-500" />
+          <NavItem to="/uncounted" icon={FiAlertCircle} label="Uncounted" badge={counts.uncounted} color="text-orange-500" />
+          <NavItem to="/unrecognized" icon={FiXCircle} label="Unrecognized" badge={counts.unrecognized} color="text-red-500" />
+          <NavItem to="/production-counted" icon={FiCpu} label="Production" badge={counts.production} color="text-blue-500" />
+
+          {/* Upload */}
+          <div className="mt-3">
+            <button
+              onClick={() => setUploadOpen((v) => !v)}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition"
+            >
+              <div className="flex items-center gap-2.5">
+                <FiUpload className="text-base text-gray-500" />
+                <span className="font-medium">Upload</span>
+              </div>
+              {uploadOpen ? <FiChevronDown className="text-xs" /> : <FiChevronRight className="text-xs" />}
+            </button>
+
+            {uploadOpen && (
+              <div className="ml-3 mt-1 space-y-0.5 border-l border-gray-100 pl-3">
+                <UploadItem to="/upload/system-stock" icon={FiDatabase} label="System Stock" uploaded={uploadStatus?.systemStock?.uploaded} />
+                <UploadItem to="/upload/tags" icon={FiTag} label="Tag List" uploaded={uploadStatus?.tagList?.uploaded} />
+                <UploadItem to="/upload/locations" icon={FiGrid} label="Location List" uploaded={uploadStatus?.locationList?.uploaded} />
+                <UploadItem to="/upload/production-parts" icon={FiTool} label="Production Parts" uploaded={uploadStatus?.productionParts?.uploaded} />
+                <UploadItem to="/upload/previous-diff" icon={FiClock} label="Previous Diff" uploaded={uploadStatus?.previousDiff?.uploaded} />
+                <UploadItem to="/upload-stocktake" icon={FiPackage} label="Upload Count" uploaded={counts.matched + counts.variance + counts.uncounted > 0} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-3 border-t border-gray-100">
+          <div className="text-[11px] text-gray-400">Power by TingTong</div>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="px-4 py-3 border-t border-gray-100">
-        <div className="text-[11px] text-gray-400">Power by TingTong</div>
-      </div>
-    </div>
+    </>
   );
 }
