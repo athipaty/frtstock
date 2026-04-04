@@ -20,15 +20,13 @@ import UploadPreviousDiff from "./pages/UploadPreviousDiff";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100">
 
-        {/* ── Sidebar (desktop only) ── */}
-        <div className="hidden md:flex md:w-60 md:flex-shrink-0">
-          <SideNav />
-        </div>
+        {/* ── Sidebar (overlay, all screen sizes) ── */}
+        <SideNav />
 
-        {/* ── Main content ── */}
-        <div className="flex-1 pb-16 md:pb-0 md:overflow-y-auto">
+        {/* ── Main content (always full width) ── */}
+        <div className="pb-16 md:pb-0">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/upload" element={<Upload />} />
