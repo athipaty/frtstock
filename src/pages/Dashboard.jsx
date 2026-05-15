@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => {
   if (n == null || isNaN(n)) return "0";
   return new Intl.NumberFormat("en-US").format(n);
@@ -106,9 +106,9 @@ export default function Dashboard() {
         shortQty,
         overQty,
         shortValue,
-        overValue, // ✅
+        overValue, // âœ…
         shortValueParts,
-        overValueParts, // ✅
+        overValueParts, // âœ…
         matched: matchRes.data.length,
         uncounted: uncountRes.data.length,
         unrecognized: unrecRes.data.length,
@@ -124,7 +124,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-sm text-gray-400 animate-pulse">
-          Loading dashboard…
+          Loading dashboardâ€¦
         </div>
       </div>
     );
@@ -132,7 +132,7 @@ export default function Dashboard() {
   if (error)
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-sm text-red-500">❌ {error}</div>
+        <div className="text-sm text-red-500">âŒ {error}</div>
       </div>
     );
 
@@ -144,7 +144,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-5xl mx-auto space-y-4 animate-fade-in">
-        {/* ── Header ── */}
+        {/* â”€â”€ Header â”€â”€ */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-lg md:text-2xl font-bold text-gray-800">
@@ -162,7 +162,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* ── Top stat row ── */}
+        {/* â”€â”€ Top stat row â”€â”€ */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-white rounded-2xl border border-blue-50 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
@@ -213,7 +213,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── Progress bars ── */}
+        {/* â”€â”€ Progress bars â”€â”€ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Count Progress
@@ -249,7 +249,7 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* ── Gap summary cards ── */}
+        {/* â”€â”€ Gap summary cards â”€â”€ */}
         {counts && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="bg-white rounded-2xl border border-orange-50 shadow-sm p-4">
@@ -263,7 +263,7 @@ export default function Dashboard() {
                 <span className="text-red-400">
                   {formatNumber(counts.shortCount)} short
                 </span>
-                <span className="text-gray-300">·</span>
+                <span className="text-gray-300">Â·</span>
                 <span className="text-green-500">
                   {formatNumber(counts.overCount)} over
                 </span>
@@ -299,7 +299,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Qty gap breakdown ── */}
+        {/* â”€â”€ Qty gap breakdown â”€â”€ */}
         {counts && (
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl border border-red-50 shadow-sm p-4">
@@ -343,7 +343,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Value gap breakdown ── */}
+        {/* â”€â”€ Value gap breakdown â”€â”€ */}
         {counts && (
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl border border-red-50 shadow-sm p-4">
@@ -361,7 +361,7 @@ export default function Dashboard() {
                         No price data
                       </span>
                     ) : (
-                      <>฿{formatNumber(Math.round(counts.shortValue))}</>
+                      <>à¸¿{formatNumber(Math.round(counts.shortValue))}</>
                     )}
                   </>
                 )}
@@ -397,7 +397,7 @@ export default function Dashboard() {
                 {counts.overValue === 0 ? (
                   <span className="text-gray-300 text-base">No price data</span>
                 ) : (
-                  <>฿{formatNumber(Math.round(counts.overValue))}</>
+                  <>à¸¿{formatNumber(Math.round(counts.overValue))}</>
                 )}
               </div>
               <div className="text-xs text-gray-400 mt-1">
@@ -425,7 +425,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Summary table (desktop) ── */}
+        {/* â”€â”€ Summary table (desktop) â”€â”€ */}
         <div className="hidden md:block bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-50">
             <div className="text-sm font-semibold text-gray-700">
@@ -470,7 +470,7 @@ export default function Dashboard() {
                       className={`px-6 py-4 text-right font-semibold ${diff < 0 ? "text-red-500" : diff > 0 ? "text-green-500" : "text-gray-400"}`}
                     >
                       {diff === 0
-                        ? "—"
+                        ? "â€”"
                         : diff > 0
                           ? `+${formatNumber(diff)}`
                           : formatNumber(diff)}
@@ -501,3 +501,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+﻿import { useMemo, useRef, useState } from "react";
 import axios from "axios";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 
 export default function UploadSystemStock() {
   const inputRef = useRef(null);
@@ -86,7 +86,7 @@ export default function UploadSystemStock() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-2xl mx-auto space-y-4 animate-fade-in">
-        {/* ── Header ── */}
+        {/* â”€â”€ Header â”€â”€ */}
         <div>
           <h1 className="text-lg md:text-2xl font-bold text-gray-800">
             Upload System Stock
@@ -98,7 +98,7 @@ export default function UploadSystemStock() {
 
         {/* Info banner */}
         <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3">
-          <span className="text-blue-400 text-lg mt-0.5">ℹ</span>
+          <span className="text-blue-400 text-lg mt-0.5">â„¹</span>
           <div className="text-xs text-blue-700 space-y-1">
             <div className="font-semibold">Used for variance comparison</div>
             <div className="text-blue-500">
@@ -108,7 +108,7 @@ export default function UploadSystemStock() {
           </div>
         </div>
 
-        {/* ── Format guide ── */}
+        {/* â”€â”€ Format guide â”€â”€ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Required Format
@@ -135,8 +135,8 @@ export default function UploadSystemStock() {
                   <td className="px-3 py-2 font-mono text-gray-700">500</td>
                 </tr>
                 <tr>
-                  <td className="px-3 py-2 font-mono text-gray-400">…</td>
-                  <td className="px-3 py-2 font-mono text-gray-400">…</td>
+                  <td className="px-3 py-2 font-mono text-gray-400">â€¦</td>
+                  <td className="px-3 py-2 font-mono text-gray-400">â€¦</td>
                 </tr>
               </tbody>
             </table>
@@ -146,7 +146,7 @@ export default function UploadSystemStock() {
           </div>
         </div>
 
-        {/* ── Upload card ── */}
+        {/* â”€â”€ Upload card â”€â”€ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Select File
@@ -176,7 +176,7 @@ export default function UploadSystemStock() {
 
             {file ? (
               <div className="space-y-1">
-                <div className="text-2xl">📄</div>
+                <div className="text-2xl">ðŸ“„</div>
                 <div className="text-sm font-semibold text-blue-600">
                   {fileInfo.name}
                 </div>
@@ -196,7 +196,7 @@ export default function UploadSystemStock() {
               </div>
             ) : (
               <div className="space-y-1">
-                <div className="text-2xl">📂</div>
+                <div className="text-2xl">ðŸ“‚</div>
                 <div className="text-sm font-medium text-gray-500">
                   Click or drag & drop
                 </div>
@@ -237,7 +237,7 @@ export default function UploadSystemStock() {
                       d="M4 12a8 8 0 018-8v8z"
                     />
                   </svg>
-                  Uploading…
+                  Uploadingâ€¦
                 </span>
               ) : (
                 "Upload"
@@ -297,7 +297,7 @@ export default function UploadSystemStock() {
           <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-4 space-y-3 animate-fade-in">
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-lg">🗑️</span>
+                <span className="text-lg">ðŸ—‘ï¸</span>
               </div>
               <div>
                 <div className="text-sm font-bold text-red-600">
@@ -313,7 +313,7 @@ export default function UploadSystemStock() {
               </div>
             </div>
             <div className="bg-red-50 rounded-xl px-3 py-2 text-xs text-red-500 flex items-center gap-2">
-              <span>⚠️</span>
+              <span>âš ï¸</span>
               <span>
                 Variance, Matched, and Uncounted pages will show no data until
                 you re-upload system stock.
@@ -337,11 +337,11 @@ export default function UploadSystemStock() {
           </div>
         )}
 
-        {/* ── Success result ── */}
+        {/* â”€â”€ Success result â”€â”€ */}
         {result && (
           <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-4">
             <div className="flex items-center gap-2">
-              <span className="text-green-500 text-lg">✅</span>
+              <span className="text-green-500 text-lg">âœ…</span>
               <div>
                 <div className="text-sm font-semibold text-green-700">
                   Upload completed
@@ -361,7 +361,7 @@ export default function UploadSystemStock() {
         {clearResult !== null && (
           <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-4">
             <div className="flex items-center gap-2">
-              <span className="text-orange-500 text-lg">🗑️</span>
+              <span className="text-orange-500 text-lg">ðŸ—‘ï¸</span>
               <div>
                 <div className="text-sm font-semibold text-orange-700">
                   Data cleared
@@ -377,23 +377,23 @@ export default function UploadSystemStock() {
           </div>
         )}
 
-        {/* ── Error result ── */}
+        {/* â”€â”€ Error result â”€â”€ */}
         {error && (
           <div className="bg-white rounded-2xl border border-red-100 shadow-sm p-4 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-red-500 text-lg">❌</span>
+              <span className="text-red-500 text-lg">âŒ</span>
               <div className="text-sm font-semibold text-red-700">{error}</div>
             </div>
             {details.length > 0 && (
               <div className="mt-2 bg-red-50 rounded-xl p-3 max-h-40 overflow-auto space-y-1">
                 {details.slice(0, 50).map((d, i) => (
                   <div key={i} className="text-xs text-red-600">
-                    • {d}
+                    â€¢ {d}
                   </div>
                 ))}
                 {details.length > 50 && (
                   <div className="text-[11px] text-red-400 pt-1">
-                    Showing first 50 errors…
+                    Showing first 50 errorsâ€¦
                   </div>
                 )}
               </div>
@@ -404,3 +404,4 @@ export default function UploadSystemStock() {
     </div>
   );
 }
+

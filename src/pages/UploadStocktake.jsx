@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+﻿import { useMemo, useRef, useState } from "react";
 import axios from "axios";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 
 export default function UploadStocktake() {
   const inputRef = useRef(null);
@@ -109,7 +109,7 @@ export default function UploadStocktake() {
 
         {/* Danger banner */}
         <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex gap-3">
-          <span className="text-red-500 text-lg mt-0.5">🗑</span>
+          <span className="text-red-500 text-lg mt-0.5">ðŸ—‘</span>
           <div className="text-xs text-red-700 space-y-1">
             <div className="font-semibold">Strict Replace Mode</div>
             <div className="text-red-500">
@@ -205,7 +205,7 @@ export default function UploadStocktake() {
             />
             {file ? (
               <div className="space-y-1">
-                <div className="text-2xl">📄</div>
+                <div className="text-2xl">ðŸ“„</div>
                 <div className="text-sm font-semibold text-blue-600">
                   {fileInfo.name}
                 </div>
@@ -225,7 +225,7 @@ export default function UploadStocktake() {
               </div>
             ) : (
               <div className="space-y-1">
-                <div className="text-2xl">📂</div>
+                <div className="text-2xl">ðŸ“‚</div>
                 <div className="text-sm font-medium text-gray-500">
                   Click or drag and drop
                 </div>
@@ -350,7 +350,7 @@ export default function UploadStocktake() {
           <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-4 space-y-3 animate-fade-in">
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-lg">🗑️</span>
+                <span className="text-lg">ðŸ—‘ï¸</span>
               </div>
               <div>
                 <div className="text-sm font-bold text-red-600">
@@ -367,7 +367,7 @@ export default function UploadStocktake() {
               </div>
             </div>
             <div className="bg-red-50 rounded-xl px-3 py-2 text-xs text-red-500 flex items-center gap-2">
-              <span>⚠️</span>
+              <span>âš ï¸</span>
               <span>
                 All variance, matched, and uncounted data will be wiped until
                 counts are re-entered.
@@ -395,7 +395,7 @@ export default function UploadStocktake() {
         {clearResult !== null && (
           <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-4">
             <div className="flex items-center gap-2">
-              <span className="text-orange-500 text-lg">🗑️</span>
+              <span className="text-orange-500 text-lg">ðŸ—‘ï¸</span>
               <div>
                 <div className="text-sm font-semibold text-orange-700">
                   Data cleared
@@ -415,14 +415,14 @@ export default function UploadStocktake() {
         {error && (
           <div className="bg-white rounded-2xl border border-red-100 shadow-sm p-4 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-red-500 text-lg">❌</span>
+              <span className="text-red-500 text-lg">âŒ</span>
               <div className="text-sm font-semibold text-red-700">{error}</div>
             </div>
             {details.length > 0 && (
               <div className="bg-red-50 rounded-xl p-3 max-h-40 overflow-auto space-y-1">
                 {details.slice(0, 50).map((d, i) => (
                   <div key={i} className="text-xs text-red-600">
-                    • {d}
+                    â€¢ {d}
                   </div>
                 ))}
                 {details.length > 50 && (
@@ -438,3 +438,4 @@ export default function UploadStocktake() {
     </div>
   );
 }
+

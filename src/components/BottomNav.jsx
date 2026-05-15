@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+﻿import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -13,19 +13,19 @@ import {
   FiXCircle,
   FiDatabase,
   FiPackage,
-  FiTag, // ✅ add
+  FiTag, // âœ… add
   FiTool,
   FiCpu,
   FiClock,
 } from "react-icons/fi";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
-  const [uploadOpen, setUploadOpen] = useState(false); // ✅ upload submenu
+  const [uploadOpen, setUploadOpen] = useState(false); // âœ… upload submenu
   const [matchedCount, setMatchedCount] = useState(0);
   const [varianceCount, setVarianceCount] = useState(0);
   const [uncountedCount, setUncountedCount] = useState(0);
@@ -53,21 +53,21 @@ export default function BottomNav() {
           axios.get(`${API}/count/variance`),
           axios.get(`${API}/count/uncounted`),
           axios.get(`${API}/count/unrecognized`),
-          axios.get(`${API}/upload/status`), // ✅ add this
-          axios.get(`${API}/count/production-counted`), // ✅
+          axios.get(`${API}/upload/status`), // âœ… add this
+          axios.get(`${API}/count/production-counted`), // âœ…
         ]);
         setMatchedCount(matchedRes.data.length);
         setVarianceCount(varianceRes.data.length);
         setUncountedCount(uncountedRes.data.length);
         setUnrecognizedCount(unrecognizedRes.data.length);
-        setUploadStatus(statusRes.data); // ✅ add this
-        setProductionCountedCount(productionRes.data.length); // ✅
+        setUploadStatus(statusRes.data); // âœ… add this
+        setProductionCountedCount(productionRes.data.length); // âœ…
       } catch {
         setMatchedCount(0);
         setVarianceCount(0);
         setUncountedCount(0);
         setUnrecognizedCount(0);
-        setProductionCountedCount(0); // ✅
+        setProductionCountedCount(0); // âœ…
       }
     };
     fetchCounts();
@@ -76,7 +76,7 @@ export default function BottomNav() {
   const GreenCheck = ({ show }) =>
     show ? (
       <span className="absolute -top-1 -right-1 bg-green-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center">
-        ✓
+        âœ“
       </span>
     ) : null;
 
@@ -108,7 +108,7 @@ export default function BottomNav() {
             </div>
 
             <div className="grid grid-cols-3 gap-1 pb-2">
-              {/* ── Unrecognized ── */}
+              {/* â”€â”€ Unrecognized â”€â”€ */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/unrecognized")}
@@ -120,7 +120,7 @@ export default function BottomNav() {
                 <span className="text-[11px] text-gray-600">Unrecognized</span>
               </button>
 
-              {/* ── Uncounted ── */}
+              {/* â”€â”€ Uncounted â”€â”€ */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/uncounted")}
@@ -132,7 +132,7 @@ export default function BottomNav() {
                 <span className="text-[11px] text-gray-600">Uncounted</span>
               </button>
 
-              {/* ── Matched ── */}
+              {/* â”€â”€ Matched â”€â”€ */}
               <button
                 className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-50"
                 onClick={() => navigate("/matched")}
@@ -156,7 +156,7 @@ export default function BottomNav() {
                 <span className="text-[11px] text-gray-600">Production</span>
               </button>
 
-              {/* ── Upload (collapsible) ── */}
+              {/* â”€â”€ Upload (collapsible) â”€â”€ */}
               <button
                 className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition ${uploadOpen ? "bg-blue-50 text-gray-600" : "hover:bg-gray-50 text-gray-600"}`}
                 onClick={() => setUploadOpen((v) => !v)}
@@ -166,7 +166,7 @@ export default function BottomNav() {
               </button>
             </div>
 
-            {/* ── Upload submenu (expands inline) ── */}
+            {/* â”€â”€ Upload submenu (expands inline) â”€â”€ */}
             {uploadOpen && (
               <div className="pt-2 pb-1 border-t border-dashed border-gray-100 animate-fade-in space-y-1">
                 <div className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide px-2">
@@ -246,7 +246,7 @@ export default function BottomNav() {
                   >
                     <div className="relative">
                       <FiPackage className="text-2xl text-blue-500" />
-                      {/* ✅ green check if any physical counts exist */}
+                      {/* âœ… green check if any physical counts exist */}
                       <GreenCheck
                         show={
                           uncountedCount <
@@ -319,3 +319,4 @@ export default function BottomNav() {
     </>
   );
 }
+

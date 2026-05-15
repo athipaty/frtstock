@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+﻿import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import EditCountModal from "../components/variance/EditCountModal";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
 
-// ✅ debounce helper
+// âœ… debounce helper
 const useDebounce = (fn, delay) => {
   const timer = useRef(null);
   return useCallback(
@@ -98,7 +98,7 @@ export default function Count() {
       );
       if (check.data?._id) {
         const confirm = window.confirm(
-          `⚠️ A count for ${form.partNo} at ${form.location} already exists (Qty: ${formatNumber(check.data.totalQty)}).\n\nOverwrite it?`,
+          `âš ï¸ A count for ${form.partNo} at ${form.location} already exists (Qty: ${formatNumber(check.data.totalQty)}).\n\nOverwrite it?`,
         );
         if (!confirm) return;
       }
@@ -190,7 +190,7 @@ export default function Count() {
     } catch (err) {
       if (err.response?.status === 409) {
         setEditMsg(
-          "⚠️ Another record already exists with the same Part No + Location.",
+          "âš ï¸ Another record already exists with the same Part No + Location.",
         );
       } else {
         setEditMsg(err.response?.data?.error || "Failed to save.");
@@ -348,7 +348,7 @@ export default function Count() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-7xl mx-auto animate-fade-in">
-        {/* ── Header ── */}
+        {/* â”€â”€ Header â”€â”€ */}
         <div className="mb-4 md:mb-6">
           <h1 className="text-lg md:text-2xl font-bold text-gray-800">
             Inventory Count
@@ -359,7 +359,7 @@ export default function Count() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start">
-          {/* ── LEFT: Form + Recent ── */}
+          {/* â”€â”€ LEFT: Form + Recent â”€â”€ */}
           <div className="w-full md:w-80 shrink-0 space-y-4">
             {/* Form card */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2">
@@ -390,7 +390,7 @@ export default function Count() {
                     value={form.location}
                     onChange={(e) => {
                       const val = e.target.value;
-                      setForm((prev) => ({ ...prev, location: val })); // ✅ use functional update
+                      setForm((prev) => ({ ...prev, location: val })); // âœ… use functional update
                       debouncedSearchLocation(val);
                     }}
                     onKeyDown={handleLocationKeyDown}
@@ -424,7 +424,7 @@ export default function Count() {
                   value={form.partNo}
                   onChange={(e) => {
                     const val = e.target.value;
-                    setForm((prev) => ({ ...prev, partNo: val })); // ✅ use functional update
+                    setForm((prev) => ({ ...prev, partNo: val })); // âœ… use functional update
                     debouncedSearchPartNo(val);
                   }}
                   onKeyDown={handlePartKeyDown}
@@ -520,7 +520,7 @@ export default function Count() {
                 disabled={saving}
                 className={`w-full py-2.5 rounded-xl text-white font-semibold text-sm tracking-wide transition ${saving ? "bg-blue-300" : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"}`}
               >
-                {saving ? "Saving…" : "Save Count"}
+                {saving ? "Savingâ€¦" : "Save Count"}
               </button>
 
               {/* Message */}
@@ -534,7 +534,7 @@ export default function Count() {
                         : "bg-red-50 text-red-700 border border-red-100"
                   }`}
                 >
-                  {isSuccess ? "✅ " : isDuplicate ? "⚠️ " : "❌ "}
+                  {isSuccess ? "âœ… " : isDuplicate ? "âš ï¸ " : "âŒ "}
                   {message}
                 </div>
               )}
@@ -598,7 +598,7 @@ export default function Count() {
             )}
           </div>
 
-          {/* ── RIGHT: All counted records ── */}
+          {/* â”€â”€ RIGHT: All counted records â”€â”€ */}
           <div className="hidden md:block flex-1 w-full">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               {/* Header + Search */}
@@ -609,7 +609,7 @@ export default function Count() {
                   </div>
                   <div className="text-xs text-gray-400">
                     {allCounts.length} records total
-                    {allSearch && ` · ${filteredAll.length} results`}
+                    {allSearch && ` Â· ${filteredAll.length} results`}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -622,14 +622,14 @@ export default function Count() {
                       onChange={(e) => setAllSearch(e.target.value)}
                     />
                     <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
-                      🔍
+                      ðŸ”
                     </span>
                     {allSearch && (
                       <button
                         className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
                         onClick={() => setAllSearch("")}
                       >
-                        ✕
+                        âœ•
                       </button>
                     )}
                   </div>
@@ -663,7 +663,7 @@ export default function Count() {
 
               {allLoading ? (
                 <div className="text-xs text-gray-400 text-center py-12">
-                  Loading records…
+                  Loading recordsâ€¦
                 </div>
               ) : filteredAll.length === 0 ? (
                 <div className="text-xs text-gray-400 text-center py-12 italic">
@@ -671,7 +671,7 @@ export default function Count() {
                 </div>
               ) : (
                 <>
-                  {/* ── Desktop: table ── */}
+                  {/* â”€â”€ Desktop: table â”€â”€ */}
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
@@ -747,7 +747,7 @@ export default function Count() {
                     </table>
                   </div>
 
-                  {/* ── Mobile: card list ── */}
+                  {/* â”€â”€ Mobile: card list â”€â”€ */}
                   <div className="md:hidden divide-y divide-gray-50">
                     {filteredAll.map((r, i) => (
                       <div
@@ -763,13 +763,13 @@ export default function Count() {
                             {r.location}
                             {r.tagNo && (
                               <span className="ml-2 text-gray-300">
-                                · {r.tagNo}
+                                Â· {r.tagNo}
                               </span>
                             )}
                           </div>
                           {(r.boxes > 0 || r.qtyPerBox > 0) && (
                             <div className="text-[11px] text-gray-400 mt-0.5">
-                              {r.qtyPerBox} × {r.boxes}
+                              {r.qtyPerBox} Ã— {r.boxes}
                               {r.openBoxQty > 0 && ` + ${r.openBoxQty}`}
                             </div>
                           )}
@@ -809,3 +809,4 @@ export default function Count() {
     </div>
   );
 }
+

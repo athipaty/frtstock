@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+﻿import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -22,7 +22,7 @@ import {
   FiMenu,
 } from "react-icons/fi";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 
 export default function SideNav() {
   const location = useLocation();
@@ -139,14 +139,14 @@ export default function SideNav() {
           <FiMenu className="text-lg" />
         </button>
       )}
-      {/* ── Overlay backdrop (mobile) ── */}
+      {/* â”€â”€ Overlay backdrop (mobile) â”€â”€ */}
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px] md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
-      {/* ── Sidebar panel ── */}
+      {/* â”€â”€ Sidebar panel â”€â”€ */}
       <div
         className={`fixed top-0 left-0 h-screen w-60 bg-white border-r border-gray-100 shadow-sm flex flex-col z-40 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
@@ -286,3 +286,4 @@ export default function SideNav() {
     </>
   );
 }
+

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import MatchedList from "../components/matched/MatchedList";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
 
-// ✅ parts that had a gap in N-1 or N-2 or both
+// âœ… parts that had a gap in N-1 or N-2 or both
 const hadPrevGap = (v) =>
   (v.diffN1 != null && v.diffN1 !== 0) || (v.diffN2 != null && v.diffN2 !== 0);
 
@@ -64,7 +64,7 @@ export default function Matched() {
 
   const totalMatchedQty = matched.reduce((sum, v) => sum + (v.actual || 0), 0);
 
-  // ✅ parts with previous gap
+  // âœ… parts with previous gap
   const prevGapParts = matched.filter(hadPrevGap);
 
   const filtered = matched
@@ -75,7 +75,7 @@ export default function Matched() {
     });
 
   const DiffCell = ({ value }) => {
-    if (value == null) return <span className="text-gray-300">—</span>;
+    if (value == null) return <span className="text-gray-300">â€”</span>;
     return (
       <span
         className={
@@ -94,7 +94,7 @@ export default function Matched() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-5xl mx-auto space-y-4 animate-fade-in">
-        {/* ── Header ── */}
+        {/* â”€â”€ Header â”€â”€ */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-lg md:text-2xl font-bold text-gray-800">
@@ -138,7 +138,7 @@ export default function Matched() {
           </div>
         </div>
 
-        {/* ── Stat cards ── */}
+        {/* â”€â”€ Stat cards â”€â”€ */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <div className="bg-white rounded-2xl border border-green-50 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
@@ -160,7 +160,7 @@ export default function Matched() {
             <div className="text-xs text-gray-400 mt-0.5">units matched</div>
           </div>
 
-          {/* ✅ Had Previous Gap card */}
+          {/* âœ… Had Previous Gap card */}
           <div
             className={`bg-white rounded-2xl border shadow-sm p-4 transition ${
               showPrevGap
@@ -189,16 +189,16 @@ export default function Matched() {
                   : "bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
               }`}
             >
-              {showPrevGap ? "✕ Clear Filter" : "Show Items"}
+              {showPrevGap ? "âœ• Clear Filter" : "Show Items"}
             </button>
           </div>
         </div>
 
-        {/* ── Main card ── */}
+        {/* â”€â”€ Main card â”€â”€ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           {loading && (
             <div className="text-xs text-gray-500 text-center py-6">
-              Loading matched data…
+              Loading matched dataâ€¦
             </div>
           )}
 
@@ -214,21 +214,21 @@ export default function Matched() {
               }}
             />
             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-              🔍
+              ðŸ”
             </span>
             {search && (
               <button
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
                 onClick={() => setSearch("")}
               >
-                ✕
+                âœ•
               </button>
             )}
           </div>
 
           {!loading && (
             <>
-              {/* ── Desktop: table ── */}
+              {/* â”€â”€ Desktop: table â”€â”€ */}
               <div className="hidden md:block">
                 {filtered.length === 0 ? (
                   <div className="text-xs text-gray-400 text-center py-8 italic">
@@ -289,7 +289,7 @@ export default function Matched() {
                                   {formatNumber(v.actual)}
                                 </td>
 
-                                {/* ✅ Diff column */}
+                                {/* âœ… Diff column */}
                                 <td className="px-4 py-3 text-right text-xs text-gray-400 font-medium">
                                   {diff === 0 ? (
                                     <span className="text-green-500">0</span>
@@ -309,11 +309,11 @@ export default function Matched() {
                                 </td>
                                 <td className="px-4 py-3 text-right">
                                   <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                                    ✓ Matched
+                                    âœ“ Matched
                                   </span>
                                 </td>
                                 <td className="px-4 py-3 text-right text-xs text-gray-400">
-                                  {isOpen ? "▲" : "▼"}
+                                  {isOpen ? "â–²" : "â–¼"}
                                 </td>
                               </tr>
 
@@ -338,12 +338,12 @@ export default function Matched() {
                                             </span>
                                             <span className="text-gray-400 flex-1">
                                               {l.boxes > 0 &&
-                                                `${l.qtyPerBox} × ${l.boxes}`}
+                                                `${l.qtyPerBox} Ã— ${l.boxes}`}
                                               {l.openBoxQty > 0 &&
                                                 `${l.boxes > 0 ? " + " : ""}${l.openBoxQty}`}
                                               {l.boxes === 0 &&
                                                 l.openBoxQty === 0 &&
-                                                "—"}
+                                                "â€”"}
                                             </span>
                                             <span className="font-semibold text-gray-800 w-24 text-right">
                                               {formatNumber(l.totalQty)}
@@ -362,7 +362,7 @@ export default function Matched() {
                 )}
               </div>
 
-              {/* ── Mobile: original list ── */}
+              {/* â”€â”€ Mobile: original list â”€â”€ */}
               <div className="md:hidden">
                 <MatchedList
                   matched={filtered}
@@ -377,3 +377,4 @@ export default function Matched() {
     </div>
   );
 }
+

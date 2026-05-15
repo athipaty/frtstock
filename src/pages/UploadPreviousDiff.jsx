@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+﻿import { useMemo, useRef, useState } from "react";
 import axios from "axios";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 
 export default function UploadPreviousDiff() {
   const inputRef = useRef(null);
@@ -99,7 +99,7 @@ export default function UploadPreviousDiff() {
 
         {/* Info banner */}
         <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex gap-3">
-          <span className="text-indigo-400 text-lg mt-0.5">ℹ</span>
+          <span className="text-indigo-400 text-lg mt-0.5">â„¹</span>
           <div className="text-xs text-indigo-700 space-y-1">
             <div className="font-semibold">Used for trend tracking</div>
             <div className="text-indigo-500">
@@ -176,7 +176,7 @@ export default function UploadPreviousDiff() {
             />
             {file ? (
               <div className="space-y-1">
-                <div className="text-2xl">📄</div>
+                <div className="text-2xl">ðŸ“„</div>
                 <div className="text-sm font-semibold text-indigo-600">
                   {fileInfo.name}
                 </div>
@@ -196,7 +196,7 @@ export default function UploadPreviousDiff() {
               </div>
             ) : (
               <div className="space-y-1">
-                <div className="text-2xl">📂</div>
+                <div className="text-2xl">ðŸ“‚</div>
                 <div className="text-sm font-medium text-gray-500">
                   Click or drag and drop
                 </div>
@@ -296,7 +296,7 @@ export default function UploadPreviousDiff() {
           <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-4 space-y-3 animate-fade-in">
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-lg">🗑️</span>
+                <span className="text-lg">ðŸ—‘ï¸</span>
               </div>
               <div>
                 <div className="text-sm font-bold text-red-600">
@@ -312,7 +312,7 @@ export default function UploadPreviousDiff() {
               </div>
             </div>
             <div className="bg-red-50 rounded-xl px-3 py-2 text-xs text-red-500 flex items-center gap-2">
-              <span>⚠️</span>
+              <span>âš ï¸</span>
               <span>
                 Variance, Matched, and Uncounted pages will no longer show trend
                 history until you re-upload.
@@ -340,7 +340,7 @@ export default function UploadPreviousDiff() {
         {result && (
           <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-4">
             <div className="flex items-center gap-2">
-              <span className="text-green-500 text-lg">✅</span>
+              <span className="text-green-500 text-lg">âœ…</span>
               <div>
                 <div className="text-sm font-semibold text-green-700">
                   Upload completed
@@ -360,7 +360,7 @@ export default function UploadPreviousDiff() {
         {clearResult !== null && (
           <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-4">
             <div className="flex items-center gap-2">
-              <span className="text-orange-500 text-lg">🗑️</span>
+              <span className="text-orange-500 text-lg">ðŸ—‘ï¸</span>
               <div>
                 <div className="text-sm font-semibold text-orange-700">
                   Data cleared
@@ -380,14 +380,14 @@ export default function UploadPreviousDiff() {
         {error && (
           <div className="bg-white rounded-2xl border border-red-100 shadow-sm p-4 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-red-500 text-lg">❌</span>
+              <span className="text-red-500 text-lg">âŒ</span>
               <div className="text-sm font-semibold text-red-700">{error}</div>
             </div>
             {details.length > 0 && (
               <div className="bg-red-50 rounded-xl p-3 max-h-40 overflow-auto space-y-1">
                 {details.slice(0, 50).map((d, i) => (
                   <div key={i} className="text-xs text-red-600">
-                    • {d}
+                    â€¢ {d}
                   </div>
                 ))}
                 {details.length > 50 && (
@@ -403,3 +403,4 @@ export default function UploadPreviousDiff() {
     </div>
   );
 }
+

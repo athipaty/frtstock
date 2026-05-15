@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import UncountedList from "../components/uncounted/UncountedList";
 
-const API = "https://center-kitchen-backend.onrender.com";
+const API = import.meta.env.VITE_API || "https://center-kitchen-backend.onrender.com";
 const formatNumber = (n) => new Intl.NumberFormat("en-US").format(n);
 
-// ✅ same as variance page
+// âœ… same as variance page
 const isEqual3Uncounted = (n1, n2, system) => {
   if (n1 == null || n2 == null) return false;
   // for uncounted, current diff = 0 - system = -system
@@ -69,7 +69,7 @@ export default function Uncounted() {
 
   const totalSystemQty = uncounted.reduce((sum, v) => sum + (v.system || 0), 0);
 
-  // ✅ parts where N-1 and N-2 equal current diff (-system)
+  // âœ… parts where N-1 and N-2 equal current diff (-system)
   const same3Parts = uncounted.filter((v) =>
     isEqual3Uncounted(v.diffN1, v.diffN2, v.system),
   );
@@ -82,7 +82,7 @@ export default function Uncounted() {
     });
 
   const DiffCell = ({ value }) => {
-    if (value == null) return <span className="text-gray-300">—</span>;
+    if (value == null) return <span className="text-gray-300">â€”</span>;
     return (
       <span
         className={
@@ -101,7 +101,7 @@ export default function Uncounted() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20 md:pb-8">
       <div className="max-w-md md:max-w-5xl mx-auto space-y-4 animate-fade-in">
-        {/* ── Header ── */}
+        {/* â”€â”€ Header â”€â”€ */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-lg md:text-2xl font-bold text-gray-800">
@@ -145,7 +145,7 @@ export default function Uncounted() {
           </div>
         </div>
 
-        {/* ── Stat cards ── */}
+        {/* â”€â”€ Stat cards â”€â”€ */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <div className="bg-white rounded-2xl border border-orange-50 shadow-sm p-4">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
@@ -167,7 +167,7 @@ export default function Uncounted() {
             <div className="text-xs text-gray-400 mt-0.5">units in system</div>
           </div>
 
-          {/* ✅ Same 3x card */}
+          {/* âœ… Same 3x card */}
           <div
             className={`bg-white rounded-2xl border shadow-sm p-4 transition ${
               showSame3
@@ -196,16 +196,16 @@ export default function Uncounted() {
                   : "bg-red-50 text-red-500 hover:bg-red-100"
               }`}
             >
-              {showSame3 ? "✕ Clear Filter" : "Show Items"}
+              {showSame3 ? "âœ• Clear Filter" : "Show Items"}
             </button>
           </div>
         </div>
 
-        {/* ── Main card ── */}
+        {/* â”€â”€ Main card â”€â”€ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           {loading && (
             <div className="text-xs text-gray-500 text-center py-6">
-              Loading uncounted data…
+              Loading uncounted dataâ€¦
             </div>
           )}
 
@@ -221,25 +221,25 @@ export default function Uncounted() {
               }}
             />
             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-              🔍
+              ðŸ”
             </span>
             {search && (
               <button
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
                 onClick={() => setSearch("")}
               >
-                ✕
+                âœ•
               </button>
             )}
           </div>
 
           {!loading && (
             <>
-              {/* ── Desktop: table ── */}
+              {/* â”€â”€ Desktop: table â”€â”€ */}
               <div className="hidden md:block">
                 {filtered.length === 0 ? (
                   <div className="text-xs text-gray-400 text-center py-8 italic">
-                    All parts have been counted! 🎉
+                    All parts have been counted! ðŸŽ‰
                   </div>
                 ) : (
                   <table className="w-full text-sm">
@@ -287,7 +287,7 @@ export default function Uncounted() {
                               <td className="px-4 py-3 text-right text-orange-400 font-medium">
                                 0
                               </td>
-                              {/* ✅ Diff column */}
+                              {/* âœ… Diff column */}
                               <td className="px-4 py-3 text-right font-bold text-red-500 text-xs">
                                 {formatNumber(diff)}
                               </td>
@@ -299,7 +299,7 @@ export default function Uncounted() {
                               </td>
                               <td className="px-4 py-3 text-right">
                                 <span className="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
-                                  ⚠ Not counted
+                                  âš  Not counted
                                 </span>
                               </td>
                             </tr>
@@ -310,7 +310,7 @@ export default function Uncounted() {
                 )}
               </div>
 
-              {/* ── Mobile: original list ── */}
+              {/* â”€â”€ Mobile: original list â”€â”€ */}
               <div className="md:hidden">
                 <UncountedList
                   uncounted={filtered}
@@ -325,3 +325,4 @@ export default function Uncounted() {
     </div>
   );
 }
+
